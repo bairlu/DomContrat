@@ -36,3 +36,13 @@ Maintain this static HTML/CSS/JavaScript application. Publish changes only when 
 ## Updates
 
 After a requested update, repeat the checks and release procedure; pushing tested changes to `main` deploys automatically. Keep README deployment/domain instructions and ACCEPTANCE accurate. Do not add a custom domain unless the user supplies and authorizes it. Keep existing CNAME/domain settings when rebuilding or updating.
+
+
+## Current derived fields and references
+
+- PDF download names are `عقد العمل المنزلي - (worker full name).pdf`, with safe filename normalization in src/contract-data.js. Do not expose entered names through URLs or logs.
+- The professional role is derived from the worker sex/language, readonly in the form, and independently derived again in PDF output. A caller-provided role must not override it.
+- Other selected tasks follow the explicit label «مهام أخرى مسموح بها قانونا:» (or its French equivalent). Keep spaces before Arabic/Latin commas and semicolons, without orphan punctuation.
+- Recto verso guidance stays below the PDF preview in the interface, outside the legal contract text.
+- Keep the full law title visible and retain the three verified Gazette links from src/legal-config.js. External references open only on a user click, with noreferrer; never fetch them automatically or append form data.
+- Build fingerprints JS/CSS filenames in published HTML to prevent stale cached assets. Stable app.js/app.css aliases serve the source-root local entry; do not remove those aliases without updating that entry and tests.

@@ -1,3 +1,4 @@
+import {law} from './legal-config.js';
 export const identityAr="اللجنة الجهوية للتنسيق بين النيابة العامة لدى محكمة الاستئناف بأكادير والمديرية الجهوية للتشغيل والحوار الاجتماعي سوس ماسة.";
 export const identityFr="La commission régionale de coordination entre le ministère public près la Cour d’appel d’Agadir et la Direction régionale de l’emploi et du dialogue social Souss Massa.";
 export const choices={
@@ -646,3 +647,11 @@ export const copy={
     "duplexMany": "Veuillez imprimer le contrat recto verso. Le document comporte {pages} pages, soit {sheets} feuilles en impression recto verso."
   }
 };
+
+copy.ar.legalBasis=`تعمل هذه المنصة وفق ${law.citationAr}.`;
+copy.fr.legalBasis=`Cette plateforme est conçue conformément à la ${law.citationFr}.`;
+copy.ar.automaticRole='تحدد تلقائياً حسب جنس العامل';
+copy.fr.automaticRole='Déterminée automatiquement selon le sexe';
+copy.ar.officialSources='المراجع الرسمية — الجريدة الرسمية';
+copy.fr.officialSources='Sources officielles — Bulletin officiel';
+for(const language of ['ar','fr'])for(const key of ['procedure','reference'])copy[language][key]=copy[language][key].replace(language==='ar'?'القانون رقم 19.12':'loi n° 19-12',language==='ar'?law.citationAr:law.citationFr);

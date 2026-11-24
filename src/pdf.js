@@ -1,3 +1,5 @@
+import {professionalRole} from './contract-data.js';
+import {law} from './legal-config.js';
 import embeddedFonts from './pdf-fonts.js';
 import { jsPDF } from 'jspdf';
 import { normalizeArabicTextMap } from './pdf-unicode.js';
@@ -6,7 +8,7 @@ import { choices } from './i18n.js';
 const clean = (value) => value.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').replace(/\s+/g, ' ').trim();
 export function contractBlocks(d) {
     const ar = str(d, 'language') !== 'fr', c = choices[ar ? 'ar' : 'fr'];
-    const v = (key) => clean(str(d, key));
+    const v = (key) => key==='role'?professionalRole(d):clean(str(d, key));
     const label = (list, key) => list.find(row => row[0] === v(key))?.[1] ?? '';
     const date = (key) => v(key).split('-').reverse().join('/');
     const employer = clean(`${v('employerFirst')} ${v('employerLast')}`), worker = clean(`${v('workerFirst')} ${v('workerLast')}`);
@@ -18,7 +20,7 @@ export function contractBlocks(d) {
     const workerSignature=ar?(female?'توقيع العاملة المنزلية':'توقيع العامل المنزلي'):(female?'Signature de la travailleuse domestique':'Signature du travailleur domestique');
     const fill = value => '\ue000'+value+'\ue001';
     const b = (marked, kind = 'body') => {
-        if(ar)marked=String(marked).replace(/\s*؛/g,' ؛');
+        marked=String(marked).replace(/\s*([؛;،,])/g,' $1');
         const runs=[];let bold=false;
         for(const part of String(marked).split(/([\ue000\ue001])/)){
             if(part==='\ue000')bold=true;
@@ -38,7 +40,7 @@ export function contractBlocks(d) {
     const restDay={mon:'اثنين',tue:'ثلاثاء',wed:'أربعاء',thu:'خميس',fri:'جمعة',sat:'سبت',sun:'أحد'}[v('rest')];
     const blocks = ar ? [
         b('عقد العمل الخاص بالعاملة أو العامل المنزلي', 'title'),
-        b('المادة 3 من القانون رقم 19.12 بتحديد شروط الشغل والتشغيل المتعلقة بالعاملات والعمال المنزليين', 'subtitle'),
+        b(`المادة 3 من ${law.citationAr}`, 'subtitle'),
         b('بين الموقعين:'), b(employerParty+':', 'party'),
         b(`الاسم الشخصي والعائلي: ${fill(employer)}`), b(`العنوان: ${fill(v('employerAddress'))}`),
         identity('employer'),
@@ -52,7 +54,7 @@ export function contractBlocks(d) {
             ['home', 'الاعتناء بشؤون البيت؛'], ['children', 'الاعتناء بالأطفال؛'], ['care', 'الاعتناء بفرد من أفراد البيت بسبب سنه أو عجزه، أو مرضه، أو كونه من الأشخاص في وضعية إعاقة؛'], ['driving', 'السياقة؛'], ['garden', 'أعمال البستنة؛'], ['guard', 'حراسة البيت.'],
         ].map(([key, text]) => ({ ...b(text), checked: d.tasks.includes(key) })),
         b('يمكن الإشارة إلى أي عمل آخر مسموح به قانونا.'),
-        ...(d.tasks.includes('other') ? [{...b(fill(v('otherTask'))),checked:true}] : []),
+        ...(d.tasks.includes('other') ? [{...b(ar?`مهام أخرى مسموح بها قانونا: ${fill(v('otherTask'))}`:`Autres tâches légalement autorisées : ${fill(v('otherTask'))}`),checked:true}] : []),
         b('المادة 3: فترة الاختبار', 'heading'), b(v('contractType')==='CDD'?'لا يتضمن هذا العقد المحدد المدة فترة اختبار.':`${female?'تخضع':'يخضع'} ${title} ${fill(worker)} لفترة اختبار مدتها ${fill(v('probationDays'))} يوما، ويمكن خلالها لأحد الطرفين إنهاء عقد الشغل بإرادته ودون تعويض.`),
         b('المادة 4: مدة العمل الأسبوعية', 'heading'), b(`تحدد مدة العمل الأسبوعية ${female?'للسيدة':'للسيد'}: ${fill(worker)} في ${fill(v('hours'))} ساعة.`),
         b('المادة 5: الأجر', 'heading'), b(`${female?'تتقاضى':'يتقاضى'} ${title}: ${fill(worker)} أجرا نقديا قدره ${fill(v('salary'))} درهما شهريا.`),
@@ -62,7 +64,7 @@ export function contractBlocks(d) {
         b('- راحة خلال أيام الأعياد الدينية والوطنية ويمكن تأجيل الاستفادة منها إلى تاريخ لاحق يحدد باتفاق الطرفين؛'), b('- رخص عن التغيب لأسباب عائلية.'),
         b('المادة 7:', 'heading'),
         b('تطبق أحكام القانون رقم 19.12 بتحديد شروط الشغل والتشغيل المتعلقة بالعاملات والعمال المنزليين في كل ما لم يتم التنصيص عليه في هذا العقد النموذجي.'),
-        b('يمكن للطرفين أن يتفقا على تضمين هذا العقد بنودا أخرى تكون أكثر فائدة للعاملة أو العامل المنزلي فضلا عن ما هو منصوص عليه في القانون رقم 19.12 السالف الذكر، لاسيما ما يتعلق بتوفير الغذاء والمأوى.'),
+        b(`يمكن للطرفين أن يتفقا على تضمين هذا العقد بنودا أخرى تكون أكثر فائدة للعاملة أو العامل المنزلي فضلا عن ما هو منصوص عليه في ${law.citationAr} السالف الذكر، لاسيما ما يتعلق بتوفير الغذاء والمأوى.`),
     ] : [
         b('Contrat de travail de la travailleuse ou du travailleur domestique', 'title'),
         b('(Article 3 de la loi n° 19.12 fixant les conditions de travail et d’emploi des travailleuses et travailleurs domestiques)', 'subtitle'),
@@ -76,7 +78,7 @@ export function contractBlocks(d) {
         ...[
             ['home', 'effectuer les tâches ménagères;'], ['children', 'prendre soin des enfants;'], ['care', 'prendre soin d’un membre de la famille en raison de son âge, son incapacité, sa maladie ou de sa situation d’handicape;'], ['driving', 'la conduite;'], ['garden', 'les travaux de jardinage;'], ['guard', 'le gardiennage de la maison.'],
         ].map(([key, text]) => ({ ...b(text), checked: d.tasks.includes(key) })),
-        b('Tout autre travail légalement autorisé peut être cité.'), ...(d.tasks.includes('other') ? [{...b(fill(v('otherTask'))),checked:true}] : []),
+        b('Tout autre travail légalement autorisé peut être cité.'), ...(d.tasks.includes('other') ? [{...b(ar?`مهام أخرى مسموح بها قانونا: ${fill(v('otherTask'))}`:`Autres tâches légalement autorisées : ${fill(v('otherTask'))}`),checked:true}] : []),
         b('Article 3 : Période d’essai', 'heading'), b(v('contractType')==='CDD'?'Le présent contrat à durée déterminée ne prévoit pas de période d’essai.':`${title} ${fill(worker)} est ${female?'soumise':'soumis'} à une période d’essai de ${fill(v('probationDays'))} Jours durant laquelle chacune des parties peut rompre volontairement le contrat de travail, sans indemnités.`),
         b('Article 4 : Durée de travail hebdomadaire', 'heading'), b(`La durée de travail hebdomadaire de ${title} ${fill(worker)} est fixée à ${fill(v('hours'))} heures.`),
         b('Article 5 : Salaire', 'heading'), b(`${title} ${fill(worker)} perçoit un salaire en espèces d’un montant de ${fill(v('salary'))} dirhams par mois.`),
@@ -84,7 +86,7 @@ export function contractBlocks(d) {
         b(`- d’un repos hebdomadaire le ${fill(label(c.rest, 'rest'))} de chaque semaine dont la durée ne peut être inférieur à vingt quatre (24) heures continues ;`),
         b('- d’un congé annuel payé dont la durée ne peut être inférieure à un jour et demi de travail pour chaque mois ;'), b('- d’un repos pendant les jours de fêtes religieuses et nationales qui peut être reporté à une date ultérieure fixée par commun accord des parties ;'), b('- de permissions d’absence pour des évènements familiaux.'),
         b('Article 7 :', 'heading'), b('Les dispositions de la loi n° 19.12 fixant les conditions de travail et d’emploi des travailleuses et travailleurs domestiques s’appliquent dans tous ce qui n’a pas été prévus par ce contrat type.'),
-        b('Les parties peuvent prévoir, dans le présent contrat, d’autres clauses plus avantageuses à la travailleuse ou au travailleur domestique, en plus de celles prévues par la loi n° 19.12 précitée, notamment en ce qui concerne la nourriture et l’hébergement.'),
+        b(`Les parties peuvent prévoir, dans le présent contrat, d’autres clauses plus avantageuses à la travailleuse ou au travailleur domestique, en plus de celles prévues par la ${law.citationFr} précitée, notamment en ce qui concerne la nourriture et l’hébergement.`),
     ];
     if(v('benefits')||v('otherBenefits')){
         blocks.push(b(ar?'المادة 8: المزايا العينية الإضافية':'Article 8 : Avantages supplémentaires en nature','heading'));
