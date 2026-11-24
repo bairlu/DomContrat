@@ -13,7 +13,7 @@ export const choices={
       ],
       [
         "residence",
-        "سند الإقامة"
+        "بطاقة الإقامة"
       ],
       [
         "other",
@@ -207,7 +207,7 @@ export const choices={
       ],
       [
         "residence",
-        "Titre de séjour"
+        "Carte de séjour"
       ],
       [
         "other",
@@ -446,9 +446,12 @@ export const copy={
       "signPlace": "مكان تحرير العقد",
       "signDate": "تاريخ تحرير العقد",
       "inspectorate": "مقر مفتشية الشغل المختصة بمكان العمل",
-      "probationDays": "مدة فترة الاختبار (بالأيام)"
+      "probationDays": "مدة فترة الاختبار (بالأيام)",
+      "employerExpiryDate": "تاريخ انتهاء صلاحية الوثيقة",
+      "workerExpiryDate": "تاريخ انتهاء صلاحية الوثيقة",
+      "employerGender": "جنس المشغل(ة)"
     },
-    "intro": "حرّر عقد العمل خطوة بخطوة، تحقّق من البيانات، ثم راجع العقد وحمّله بصيغة Word أو PDF.",
+    "intro": "حرّر عقد العمل خطوة بخطوة، تحقّق من البيانات، ثم راجع العقد وحمّله بصيغة PDF.",
     "preview": "معاينة العقد",
     "edit": "تعديل المعلومات",
     "download": "تحميل العقد بصيغة PDF",
@@ -462,11 +465,11 @@ export const copy={
     "tasksTitle": "المهام المنزلية المتفق عليها",
     "optional": "اختياري",
     "ready": "تم إعداد العقد. راجعه قبل التحميل والتوقيع.",
-    "busy": "جارٍ إعداد ملفي Word وPDF…",
+    "busy": "جارٍ إعداد ملف PDF…",
     "downloaded": "تم تجهيز ملف PDF وبدء تحميله.",
     "blocked": "تعذر إنشاء العقد. يرجى إعادة المحاولة؛ إذا استمر الخطأ، راجع البيانات المدخلة.",
     "review": "مراجعة ومعاينة العقد",
-    "previewHint": "اختر PDF أو Word لمعاينة الملف نفسه الذي سيُحمّل. يُنشأ الملفان داخل متصفحك.",
+    "previewHint": "هذه معاينة ملف PDF نفسه الذي سيُحمّل، ويُنشأ داخل متصفحك فقط.",
     "emptyPreview": "بعد استكمال البيانات، اضغط «معاينة العقد» لعرض نص العقد كاملاً هنا.",
     "edited": "يمكنك تعديل البيانات ثم إعادة معاينة العقد.",
     "stale": "تم حفظ التعديل مؤقتاً. أعد المعاينة لتحديث العقد.",
@@ -480,8 +483,8 @@ export const copy={
     "unsupported": "تتضمن البيانات محارف لا يدعمها الخط المضمّن. استعمل الحروف العربية أو الفرنسية والأرقام والعلامات المعتادة.",
     "steps": [
       "لغة العقد",
-      "المشغل",
-      "العامل المنزلي",
+      "المشغل(ة)",
+      "العامل(ة) المنزلي(ة)",
       "طبيعة العقد",
       "العمل والأجر",
       "الراحة والحقوق",
@@ -511,7 +514,9 @@ export const copy={
     "verification": "تحقق قانوني تلقائي",
     "privacyShort": "لا حساب، لا تخزين، ولا إرسال للمعطيات الشخصية.",
     "printHint": "التحميل لا يُعد توقيعاً أو مصادقة. اطبع العقد واستكمل الإجراءات القانونية.",
-    "platformName": "منصة تحرير عقود العاملات والعمال المنزليين"
+    "platformName": "منصة تحرير عقود العاملات والعمال المنزليين",
+    "duplex": "يرجى طباعة العقد على وجهي ورقة واحدة (Recto verso)، بدلاً من ورقتين منفصلتين.",
+    "duplexMany": "يرجى طباعة العقد على وجهي الأوراق (Recto verso). يتكون العقد من {pages} صفحات، ويحتاج إلى {sheets} ورقة عند الطباعة على الوجهين."
   },
   "fr": {
     "title": "DomContrat",
@@ -568,9 +573,12 @@ export const copy={
       "signPlace": "Lieu d’établissement du contrat",
       "signDate": "Date d’établissement du contrat",
       "inspectorate": "Siège de l’inspection du travail compétente du lieu de travail",
-      "probationDays": "Durée de la période d’essai (en jours)"
+      "probationDays": "Durée de la période d’essai (en jours)",
+      "employerExpiryDate": "Date d’expiration de la pièce",
+      "workerExpiryDate": "Date d’expiration de la pièce",
+      "employerGender": "Sexe de l’employeur ou de l’employeuse"
     },
-    "intro": "Préparez le contrat étape par étape, vérifiez les données, puis consultez et téléchargez le document Word ou PDF.",
+    "intro": "Préparez le contrat étape par étape, vérifiez les données, puis consultez et téléchargez le document PDF.",
     "preview": "Aperçu du contrat",
     "edit": "Modifier les informations",
     "download": "Télécharger le contrat PDF",
@@ -584,11 +592,11 @@ export const copy={
     "tasksTitle": "Tâches domestiques convenues",
     "optional": "Facultatif",
     "ready": "Le contrat est prêt. Vérifiez-le avant téléchargement et signature.",
-    "busy": "Préparation des fichiers Word et PDF…",
+    "busy": "Préparation du fichier PDF…",
     "downloaded": "Le fichier PDF est prêt et son téléchargement a commencé.",
     "blocked": "Impossible de créer le contrat. Réessayez et vérifiez les données si le problème persiste.",
     "review": "Vérification et aperçu du contrat",
-    "previewHint": "Choisissez PDF ou Word pour afficher le fichier qui sera téléchargé. Les deux documents sont créés dans votre navigateur.",
+    "previewHint": "Cet aperçu affiche le fichier PDF qui sera téléchargé, créé uniquement dans votre navigateur.",
     "emptyPreview": "Après avoir rempli les données, sélectionnez « Aperçu du contrat » pour afficher ici le document intégral.",
     "edited": "Modifiez les informations puis actualisez l’aperçu du contrat.",
     "stale": "Modification conservée en mémoire. Actualisez l’aperçu du contrat.",
@@ -602,8 +610,8 @@ export const copy={
     "unsupported": "Certaines données contiennent des caractères non pris en charge. Utilisez les lettres arabes ou françaises, les chiffres et la ponctuation courante.",
     "steps": [
       "Langue",
-      "Employeur",
-      "Travailleur",
+      "Employeur / Employeuse",
+      "Travailleur / Travailleuse",
       "Contrat et tâches",
       "Durée et salaire",
       "Repos et droits",
@@ -633,6 +641,8 @@ export const copy={
     "verification": "Vérifications légales automatiques",
     "privacyShort": "Sans compte, sans stockage ni transmission des données personnelles.",
     "printHint": "Le téléchargement ne vaut ni signature ni légalisation. Imprimez le contrat et accomplissez les formalités légales.",
-    "platformName": "Plateforme de rédaction des contrats de travail des travailleuses et travailleurs domestiques"
+    "platformName": "Plateforme de rédaction des contrats de travail des travailleuses et travailleurs domestiques",
+    "duplex": "Veuillez imprimer le contrat recto verso sur une seule feuille, plutôt que sur deux feuilles séparées.",
+    "duplexMany": "Veuillez imprimer le contrat recto verso. Le document comporte {pages} pages, soit {sheets} feuilles en impression recto verso."
   }
 };

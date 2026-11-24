@@ -10,13 +10,15 @@ export function contractBlocks(d) {
     const label = (list, key) => list.find(row => row[0] === v(key))?.[1] ?? '';
     const date = (key) => v(key).split('-').reverse().join('/');
     const employer = clean(`${v('employerFirst')} ${v('employerLast')}`), worker = clean(`${v('workerFirst')} ${v('workerLast')}`);
-    const female=v('gender')==='female';
+    const female=v('gender')==='female',employerFemale=v('employerGender')==='female';
+    const employerParty=ar?(employerFemale?'المشغلة':'المشغل'):(employerFemale?'L’employeuse':'L’employeur');
     const title=ar?(female?'السيدة':'السيد'):(female?'Madame':'Monsieur');
     const marital=ar?({single:female?'عزباء':'أعزب',married:female?'متزوجة':'متزوج',divorced:female?'مطلقة':'مطلق',widowed:female?'أرملة':'أرمل'}[v('marital')]??''):({single:'Célibataire',married:female?'Mariée':'Marié',divorced:female?'Divorcée':'Divorcé',widowed:female?'Veuve':'Veuf'}[v('marital')]??'');
     const workerParty=ar?(female?'والعاملة المنزلية:':'والعامل المنزلي:'):(female?'La travailleuse domestique :':'Le travailleur domestique :');
     const workerSignature=ar?(female?'توقيع العاملة المنزلية':'توقيع العامل المنزلي'):(female?'Signature de la travailleuse domestique':'Signature du travailleur domestique');
     const fill = value => '\ue000'+value+'\ue001';
     const b = (marked, kind = 'body') => {
+        if(ar)marked=String(marked).replace(/\s*؛/g,' ؛');
         const runs=[];let bold=false;
         for(const part of String(marked).split(/([\ue000\ue001])/)){
             if(part==='\ue000')bold=true;
@@ -25,16 +27,25 @@ export function contractBlocks(d) {
         }
         return {text:runs.map(run=>run.text).join(''),kind,runs};
     };
+    const identity = prefix => {
+        const type=v(prefix+'IdType'),name=label(c.id,prefix+'IdType');
+        const number=fill(v(prefix+'Id')),place=fill(v(prefix+'IssuePlace'));
+        let text=ar?`${name}: ${number}، ${type==='passport'?'المسلم':'المسلمة'} ب${place}`:`${name} : ${number}, ${type==='passport'?'délivré':'délivrée'} à ${place}`;
+        if(type!=='cnie')text+=ar?` بتاريخ ${fill(date(prefix+'IssueDate'))}`:` le ${fill(date(prefix+'IssueDate'))}`;
+        if(['cnie','passport','residence'].includes(type))text+=ar?`، تاريخ انتهاء الصلاحية: ${fill(date(prefix+'ExpiryDate'))}`:`, valable jusqu’au ${fill(date(prefix+'ExpiryDate'))}`;
+        return b(text+'.');
+    };
+    const restDay={mon:'اثنين',tue:'ثلاثاء',wed:'أربعاء',thu:'خميس',fri:'جمعة',sat:'سبت',sun:'أحد'}[v('rest')];
     const blocks = ar ? [
         b('عقد العمل الخاص بالعاملة أو العامل المنزلي', 'title'),
         b('المادة 3 من القانون رقم 19.12 بتحديد شروط الشغل والتشغيل المتعلقة بالعاملات والعمال المنزليين', 'subtitle'),
-        b('بين الموقعين:'), b('المشغلة أو المشغل:', 'party'),
+        b('بين الموقعين:'), b(employerParty+':', 'party'),
         b(`الاسم الشخصي والعائلي: ${fill(employer)}`), b(`العنوان: ${fill(v('employerAddress'))}`),
-        b(`رقم البطاقة الوطنية للتعريف: ${fill(v('employerId'))}، المسلمة ب${fill(v('employerIssuePlace'))} بتاريخ ${fill(date('employerIssueDate'))}.`),
+        identity('employer'),
         b(workerParty, 'party'), b(`الاسم الشخصي والعائلي: ${fill(worker)}`),
-        b(`رقم البطاقة الوطنية للتعريف: ${fill(v('workerId'))}، المسلمة ب${fill(v('workerIssuePlace'))} بتاريخ ${fill(date('workerIssueDate'))}.`),
+        identity('worker'),
         b(`تاريخ الازدياد: ${fill(date('birth'))}`), b(`الحالة العائلية: ${fill(marital)}`), b('وقع الاتفاق على ما يلي:'),
-        b('المادة الأولى: مدة العمل', 'heading'), b(`يتم تشغيل ${title}: ${fill(worker)}`),
+        b('المادة 1: مدة العمل', 'heading'), b(`يتم تشغيل ${title}: ${fill(worker)}`),
         b(v('contractType') === 'CDI' ? `لمدة غير محددة تبتدىء من ${fill(date('start'))}.` : `لمدة محددة في ${fill(duration(v('start'), v('end')))} يوما تبتدىء من ${fill(date('start'))} إلى ${fill(date('end'))}.`),
         b('المادة 2: نوع الشغل أو الخدمة', 'heading'), b(`يتم تشغيل ${title} ${fill(worker)} ${female?'بصفتها':'بصفته'} ${fill(v('role'))}.`), b(female?'وتتمثل مهمتها في:':'وتتمثل مهمته في:'),
         ...[
@@ -44,9 +55,9 @@ export function contractBlocks(d) {
         ...(d.tasks.includes('other') ? [{...b(fill(v('otherTask'))),checked:true}] : []),
         b('المادة 3: فترة الاختبار', 'heading'), b(v('contractType')==='CDD'?'لا يتضمن هذا العقد المحدد المدة فترة اختبار.':`${female?'تخضع':'يخضع'} ${title} ${fill(worker)} لفترة اختبار مدتها ${fill(v('probationDays'))} يوما، ويمكن خلالها لأحد الطرفين إنهاء عقد الشغل بإرادته ودون تعويض.`),
         b('المادة 4: مدة العمل الأسبوعية', 'heading'), b(`تحدد مدة العمل الأسبوعية ${female?'للسيدة':'للسيد'}: ${fill(worker)} في ${fill(v('hours'))} ساعة.`),
-        b('المادة 5: الأجر', 'heading'), b(`${female?'تتقاضى':'يتقاضى'} ${title}: ${fill(worker)} أجرا نقديا قدره ${fill(v('salary'))} درهما.`),
+        b('المادة 5: الأجر', 'heading'), b(`${female?'تتقاضى':'يتقاضى'} ${title}: ${fill(worker)} أجرا نقديا قدره ${fill(v('salary'))} درهما شهريا.`),
         b('المادة 6: الراحة الأسبوعية والعطلة السنوية وأيام العطل', 'heading'), b(`${female?'تستفيد':'يستفيد'} ${title} ${fill(worker)} من:`),
-        b(`- راحة أسبوعية كل يوم ${fill(label(c.rest, 'rest'))} من الأسبوع لا تقل مدتها عن 24 ساعة متصلة.`),
+        b(`- راحة أسبوعية كل يوم ${fill(restDay)} من الأسبوع لا تقل مدتها عن 24 ساعة متصلة.`),
         b('- عطلة سنوية مدفوعة الأجر على ألا تقل مدتها عن يوم ونصف يوم عمل عن كل شهر؛'),
         b('- راحة خلال أيام الأعياد الدينية والوطنية ويمكن تأجيل الاستفادة منها إلى تاريخ لاحق يحدد باتفاق الطرفين؛'), b('- رخص عن التغيب لأسباب عائلية.'),
         b('المادة 7:', 'heading'),
@@ -55,11 +66,11 @@ export function contractBlocks(d) {
     ] : [
         b('Contrat de travail de la travailleuse ou du travailleur domestique', 'title'),
         b('(Article 3 de la loi n° 19.12 fixant les conditions de travail et d’emploi des travailleuses et travailleurs domestiques)', 'subtitle'),
-        b('ENTRE LES SOUSSIGNES:'), b('L’employeuse ou employeur :', 'party'), b(`Prénom et nom : ${fill(employer)}`), b(`Adresse : ${fill(v('employerAddress'))}`),
-        b(`N° de la carte nationale d’identité : ${fill(v('employerId'))}, délivrée à ${fill(v('employerIssuePlace'))} le ${fill(date('employerIssueDate'))}.`),
-        b(workerParty, 'party'), b(`Prénom et nom : ${fill(worker)}`), b(`N° de la carte nationale d’identité : ${fill(v('workerId'))}, délivrée à ${fill(v('workerIssuePlace'))} le ${fill(date('workerIssueDate'))}.`),
+        b('ENTRE LES SOUSSIGNES:'), b(employerParty+' :', 'party'), b(`Prénom et nom : ${fill(employer)}`), b(`Adresse : ${fill(v('employerAddress'))}`),
+        identity('employer'),
+        b(workerParty, 'party'), b(`Prénom et nom : ${fill(worker)}`), identity('worker'),
         b(`Date de naissance : ${fill(date('birth'))}`), b(`Situation familiale : ${fill(marital)}`), b('A été convenu ce qui suit :'),
-        b('Article Premier : Durée de travail', 'heading'), b(`${title} est ${female?'engagée':'engagé'} : ${fill(worker)}`),
+        b('Article 1 : Durée de travail', 'heading'), b(`${title} est ${female?'engagée':'engagé'} : ${fill(worker)}`),
         b(v('contractType') === 'CDI' ? `Pour une durée indéterminée à compter du ${fill(date('start'))}.` : `Pour une durée déterminée de ${fill(duration(v('start'), v('end')))} jours allant du ${fill(date('start'))} au ${fill(date('end'))}.`),
         b('Article 2 : Nature du travail ou du service', 'heading'), b(`${title} ${fill(worker)} est ${female?'engagée':'engagé'} en sa qualité de ${fill(v('role'))}.`), b('Ses tâches sont les suivantes :'),
         ...[
@@ -68,7 +79,7 @@ export function contractBlocks(d) {
         b('Tout autre travail légalement autorisé peut être cité.'), ...(d.tasks.includes('other') ? [{...b(fill(v('otherTask'))),checked:true}] : []),
         b('Article 3 : Période d’essai', 'heading'), b(v('contractType')==='CDD'?'Le présent contrat à durée déterminée ne prévoit pas de période d’essai.':`${title} ${fill(worker)} est ${female?'soumise':'soumis'} à une période d’essai de ${fill(v('probationDays'))} Jours durant laquelle chacune des parties peut rompre volontairement le contrat de travail, sans indemnités.`),
         b('Article 4 : Durée de travail hebdomadaire', 'heading'), b(`La durée de travail hebdomadaire de ${title} ${fill(worker)} est fixée à ${fill(v('hours'))} heures.`),
-        b('Article 5 : Salaire', 'heading'), b(`${title} ${fill(worker)} perçoit un salaire en espèces d’un montant de ${fill(v('salary'))} dirhams.`),
+        b('Article 5 : Salaire', 'heading'), b(`${title} ${fill(worker)} perçoit un salaire en espèces d’un montant de ${fill(v('salary'))} dirhams par mois.`),
         b('Article 6 : Repos hebdomadaire, congé annuel et jours fériés', 'heading'), b(`${title} ${fill(worker)} bénéficie :`),
         b(`- d’un repos hebdomadaire le ${fill(label(c.rest, 'rest'))} de chaque semaine dont la durée ne peut être inférieur à vingt quatre (24) heures continues ;`),
         b('- d’un congé annuel payé dont la durée ne peut être inférieure à un jour et demi de travail pour chaque mois ;'), b('- d’un repos pendant les jours de fêtes religieuses et nationales qui peut être reporté à une date ultérieure fixée par commun accord des parties ;'), b('- de permissions d’absence pour des évènements familiaux.'),
@@ -79,12 +90,12 @@ export function contractBlocks(d) {
         blocks.push(b(ar?'المادة 8: المزايا العينية الإضافية':'Article 8 : Avantages supplémentaires en nature','heading'));
         if(v('benefits')){
             const benefit=ar?({food:'الغذاء',housing:'المأوى',both:'الغذاء والمأوى'}[v('benefits')]):({food:'la nourriture',housing:'l’hébergement',both:'la nourriture et l’hébergement'}[v('benefits')]);
-            blocks.push(b(ar?`اتفق المشغل على توفير ${fill(benefit)} لفائدة ${female?'العاملة':'العامل'} ${fill(worker)}.`:`L’employeur s’engage à fournir ${fill(benefit)} au bénéfice de ${female?'la travailleuse':'le travailleur'} ${fill(worker)}.`));
+            blocks.push(b(ar?`${employerFemale?'اتفقت المشغلة':'اتفق المشغل'} على توفير ${fill(benefit)} لفائدة ${female?'العاملة':'العامل'} ${fill(worker)}.`:`${employerParty} s’engage à fournir ${fill(benefit)} au bénéfice de ${female?'la travailleuse':'le travailleur'} ${fill(worker)}.`));
         }
         if(v('otherBenefits'))blocks.push(b(ar?`مزايا إضافية أخرى متفق عليها: ${fill(v('otherBenefits'))}`:`Autres avantages supplémentaires convenus : ${fill(v('otherBenefits'))}`));
         blocks.push(b(ar?'هذه المزايا إضافية ولا تُخصم من الأجر النقدي ولا تقلص الحقوق المنصوص عليها في العقد.':'Ces avantages s’ajoutent au salaire en espèces, sans déduction et sans réduction des droits prévus au contrat.'));
     }
-    blocks.push(b(ar ? 'توقيع المشغلة أو المشغل' : 'Signature de l’employeuse ou l’employeur', 'signature'), b(workerSignature, 'signature'));
+    blocks.push(b(ar ? `توقيع ${employerParty}` : `Signature de ${employerFemale?'l’employeuse':'l’employeur'}`, 'signature'), b(workerSignature, 'signature'));
     return blocks;
 }
 const base64 = (bytes) => { let s = ''; for (let i = 0; i < bytes.length; i += 16384)
@@ -107,7 +118,7 @@ export async function createContractPdf(d, fonts) {
     let y = margin + 19;
     const placements = [];
     const blocks = contractBlocks(d);
-    const metrics = (b) => ({ size: b.kind === 'title' ? 19 : b.kind === 'subtitle' ? 11.5 : b.kind === 'heading' ? 16 : ar ? 14 : 12.5, line: b.kind === 'title' ? 28 : b.kind === 'subtitle' ? 18 : ar ? 22 : 20, gap: b.kind === 'heading' ? 4 : b.kind === 'party' ? 4 : 5, bold: ['title', 'heading', 'party', 'signature'].includes(b.kind) });
+    const metrics = (b) => ({ size: b.kind === 'title' ? 19 : b.kind === 'subtitle' ? 11.5 : b.kind === 'heading' ? 16 : ar ? 14 : 12.5, line: b.kind === 'title' ? 28 : b.kind === 'subtitle' ? 18 : b.kind === 'heading' ? 23 : ar ? 20 : 17, gap: b.kind === 'heading' ? 4 : ar ? 3 : 2, bold: ['title', 'heading', 'party', 'signature'].includes(b.kind) });
     const font = (b) => { const m = metrics(b); doc.setFont(m.bold ? 'Amiri-Bold' : 'Amiri-Regular', 'normal'); doc.setFontSize(m.size); return m; };
     // A missing glyph must stop the export rather than silently truncate a legal
     // paragraph. Check the shaped forms that the PDF writer will actually paint.
@@ -126,7 +137,12 @@ export async function createContractPdf(d, fonts) {
     const wrap = (text, max) => {
         const lines = [];
         let line = '';
-        for (const word of clean(text).split(' ')) {
+        const tokens=[];
+        for(const word of clean(text).split(' ')){
+            if(/^[؛;،,.!?؟]+$/.test(word)&&tokens.length)tokens[tokens.length-1]+=' '+word;
+            else tokens.push(word);
+        }
+        for (const word of tokens) {
             const candidate = line ? line + ' ' + word : word;
             if (measuredWidth(candidate) <= max) {
                 line = candidate;
@@ -271,8 +287,14 @@ export async function createContractPdf(d, fonts) {
         y += m.gap;
     }
     const pageCount = doc.getNumberOfPages();
+    const pageNumbers=[];
+    for(let page=1;page<=pageCount;page++){
+        doc.setPage(page);doc.setFont('Amiri-Regular','normal');doc.setFontSize(10);
+        const label=`${page}/${pageCount}`;doc.text(label,width/2,height-28,{align:'center',isInputRtl:false,isOutputRtl:false});
+        pageNumbers.push({page,text:label,y:height-28});
+    }
     const bytes = await normalizeArabicTextMap(new Uint8Array(doc.output('arraybuffer')));
-    return { bytes, pageCount, placements };
+    return { bytes, pageCount, placements, pageNumbers };
 }
 let loadedFonts;
 export async function generatePdfDocument(d){

@@ -2,11 +2,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {build} from 'esbuild';
-import {prepareWordTemplates} from './word-templates.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const output=path.join(root,'dist');
-prepareWordTemplates(root);
 const fonts=Object.fromEntries([['regular','Regular'],['bold','Bold']].map(([key,style])=>[key,fs.readFileSync(path.join(root,`public/fonts/Amiri-${style}.ttf`)).toString('base64')]));
 // Fonts are embedded so PDF generation needs no network, even from file://.
 fs.writeFileSync(path.join(root,'src/pdf-fonts.js'),'export default '+JSON.stringify(fonts)+';\n');

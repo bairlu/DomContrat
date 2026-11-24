@@ -4,7 +4,7 @@ export async function pdfLogicalText(bytes) { const task = getDocument({ data: b
     const text = [];
     for (let n = 1; n <= pdf.numPages; n++) {
         const result = await (await pdf.getPage(n)).getTextContent();
-        text.push(result.items.filter(item => 'str' in item).map(item => item.str).join(' ').replace(/\s+/g,' '));
+        text.push(result.items.filter(item => 'str' in item && !(item.transform[5]<45 && /^\d+\/\d+$/.test(item.str))).map(item => item.str).join(' ').replace(/\s+/g,' '));
     }
     return { text: text.join(' '), pages: pdf.numPages };
 }

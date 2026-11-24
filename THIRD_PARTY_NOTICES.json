@@ -182,18 +182,6 @@
     ]
   },
   {
-    "name": "@xmldom/xmldom",
-    "version": "0.9.12",
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "git://github.com/xmldom/xmldom.git"
-    },
-    "licenseFiles": [
-      "LICENSE"
-    ]
-  },
-  {
     "name": "agent-base",
     "version": "7.1.4",
     "license": "MIT",
@@ -238,18 +226,6 @@
       "type": "git",
       "url": "git+https://github.com/zloirock/core-js.git",
       "directory": "packages/core-js"
-    },
-    "licenseFiles": [
-      "LICENSE"
-    ]
-  },
-  {
-    "name": "core-util-is",
-    "version": "1.0.3",
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "git://github.com/isaacs/core-util-is"
     },
     "licenseFiles": [
       "LICENSE"
@@ -307,30 +283,6 @@
     },
     "licenseFiles": [
       "LICENCE.md"
-    ]
-  },
-  {
-    "name": "docx-preview",
-    "version": "0.3.7",
-    "license": "Apache-2.0",
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/VolodymyrBaydalka/docxjs.git"
-    },
-    "licenseFiles": [
-      "LICENSE"
-    ]
-  },
-  {
-    "name": "docxtemplater",
-    "version": "3.71.1",
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/open-xml-templating/docxtemplater.git"
-    },
-    "licenseFiles": [
-      "LICENSE.md"
     ]
   },
   {
@@ -459,27 +411,6 @@
     ]
   },
   {
-    "name": "immediate",
-    "version": "3.0.6",
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "git://github.com/calvinmetcalf/immediate.git"
-    },
-    "licenseFiles": [
-      "LICENSE.txt"
-    ]
-  },
-  {
-    "name": "inherits",
-    "version": "2.0.4",
-    "license": "ISC",
-    "repository": "git://github.com/isaacs/inherits",
-    "licenseFiles": [
-      "LICENSE"
-    ]
-  },
-  {
     "name": "iobuffer",
     "version": "5.4.0",
     "license": "MIT",
@@ -498,16 +429,6 @@
     "repository": {
       "type": "git",
       "url": "https://github.com/mathiasbynens/is-potential-custom-element-name.git"
-    },
-    "licenseFiles": []
-  },
-  {
-    "name": "isarray",
-    "version": "1.0.0",
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "git://github.com/juliangruber/isarray.git"
     },
     "licenseFiles": []
   },
@@ -533,30 +454,6 @@
     },
     "licenseFiles": [
       "LICENSE"
-    ]
-  },
-  {
-    "name": "jszip",
-    "version": "3.10.2",
-    "license": "(MIT OR GPL-3.0-or-later)",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/Stuk/jszip.git"
-    },
-    "licenseFiles": [
-      "LICENSE.markdown"
-    ]
-  },
-  {
-    "name": "lie",
-    "version": "3.3.0",
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/calvinmetcalf/lie.git"
-    },
-    "licenseFiles": [
-      "license.md"
     ]
   },
   {
@@ -647,39 +544,6 @@
     ]
   },
   {
-    "name": "pizzip",
-    "version": "3.2.0",
-    "license": "(MIT OR GPL-3.0)",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/open-xml-templating/pizzip"
-    },
-    "licenseFiles": [
-      "LICENSE.markdown"
-    ]
-  },
-  {
-    "name": "pako",
-    "version": "2.2.0",
-    "license": "(MIT AND Zlib)",
-    "repository": "nodeca/pako",
-    "licenseFiles": [
-      "LICENSE"
-    ]
-  },
-  {
-    "name": "process-nextick-args",
-    "version": "2.0.1",
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/calvinmetcalf/process-nextick-args.git"
-    },
-    "licenseFiles": [
-      "license.md"
-    ]
-  },
-  {
     "name": "punycode",
     "version": "2.3.1",
     "license": "MIT",
@@ -696,18 +560,6 @@
     "repository": {
       "type": "git",
       "url": "git://github.com/chrisdickinson/raf.git"
-    },
-    "licenseFiles": [
-      "LICENSE"
-    ]
-  },
-  {
-    "name": "readable-stream",
-    "version": "2.3.8",
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "git://github.com/nodejs/readable-stream"
     },
     "licenseFiles": [
       "LICENSE"
@@ -747,18 +599,6 @@
     ]
   },
   {
-    "name": "safe-buffer",
-    "version": "5.1.2",
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "git://github.com/feross/safe-buffer.git"
-    },
-    "licenseFiles": [
-      "LICENSE"
-    ]
-  },
-  {
     "name": "safer-buffer",
     "version": "2.1.2",
     "license": "MIT",
@@ -778,15 +618,6 @@
     "licenseFiles": []
   },
   {
-    "name": "setimmediate",
-    "version": "1.0.5",
-    "license": "MIT",
-    "repository": "YuzuJS/setImmediate",
-    "licenseFiles": [
-      "LICENSE.txt"
-    ]
-  },
-  {
     "name": "stackblur-canvas",
     "version": "2.7.0",
     "license": "MIT",
@@ -795,18 +626,6 @@
       "url": "https://github.com/flozz/StackBlur.git"
     },
     "licenseFiles": []
-  },
-  {
-    "name": "string_decoder",
-    "version": "1.1.1",
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "git://github.com/nodejs/string_decoder.git"
-    },
-    "licenseFiles": [
-      "LICENSE"
-    ]
   },
   {
     "name": "svg-pathdata",
@@ -899,18 +718,6 @@
     },
     "licenseFiles": [
       "LICENSE.txt"
-    ]
-  },
-  {
-    "name": "util-deprecate",
-    "version": "1.0.2",
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "git://github.com/TooTallNate/util-deprecate.git"
-    },
-    "licenseFiles": [
-      "LICENSE"
     ]
   },
   {

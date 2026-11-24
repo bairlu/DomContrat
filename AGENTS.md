@@ -6,11 +6,14 @@ Maintain this static HTML/CSS/JavaScript application. Publish changes only when 
 
 ## Privacy and document requirements
 
-- Keep all form data, validation, DOCX/PDF generation and previews in browser memory. Never add a Backend, database, analytics, tracking, remote document API, localStorage, sessionStorage, IndexedDB, cookies or automatic saving of entered data.
+- Keep all form data, validation, PDF generation and previews in browser memory. Never add a Backend, database, analytics, tracking, remote document API, localStorage, sessionStorage, IndexedDB, cookies or automatic saving of entered data.
 - Keep dependencies, fonts, logos and blank templates local. Never include real contracts, personal data, credentials, `.env` files, tokens, browser profiles or test outputs in Git or Pages artifacts. Tests must use clearly synthetic fixtures.
 - Preserve the seven articles, Arabic/French support, sex-specific wording, user-selected CDI probation of 1–15 days, CDD dates without automatic probation, free-text tasks and the existing legal validations.
-- Optional benefits belong to article 8 before the signatures, never an annex. Preserve the optional free-text otherBenefits field (maximum 3000 characters), and omit article 8 entirely when all benefits are empty. Keep filled values bold and article headings at 16pt; Word specifies Arial, PDF embeds the locally licensed Amiri. Never publish proprietary Windows font files without appropriate redistribution rights.
-- DOCX uses Docxtemplater and PizZip. DOCX and PDF share the current contract text. Do not put platform branding into the contract itself.
+- Optional benefits belong to article 8 before the signatures, never an annex. Preserve the optional free-text otherBenefits field (maximum 3000 characters), and omit article 8 entirely when all benefits are empty. Keep filled values bold and article headings at 16pt; PDF embeds the locally licensed Amiri. Never publish proprietary Windows font files without appropriate redistribution rights.
+- The current application exports PDF only. Do not reintroduce Word export, Docxtemplater, PizZip or docx-preview unless explicitly requested. Preserve original blank reference templates only as source references; they are not deployment assets. Do not put platform branding into the contract itself.
+- Identity forms require employerGender and expiry dates for both parties. CNIE asks for expiry instead of issue date; passport and residence card ask for both. Other documents retain issue date. Ignore hidden dates in validation and output, and verify expiry against the contract start/signature.
+- Use the selected sex for both parties throughout the contract, article 1 as a number, a monthly cash wage, plain Arabic weekday names, a space before Arabic semicolons and page-number footers. Keep punctuation with its preceding word.
+- The header has no language switch; keep language selection in stage 1. The wage calculation stays unchanged, with no explanatory table: insufficient wages show the computed minimum in parentheses. Preview must show the actual PDF and a recto verso notice adapted to the real page count.
 - Change wage references only after checking an official source. Edit the central register in `src/legal-config.js`, preserve effective dates and references, and explain any legal behavior changes.
 
 ## Checks before committing or publishing
@@ -19,7 +22,7 @@ Maintain this static HTML/CSS/JavaScript application. Publish changes only when 
 2. Verify `gh auth status` without printing tokens or credential files. Use the intended connected account; request user intervention only when authentication or permission is actually required.
 3. Run `npm ci` when dependencies changed or are missing, then `npm run licenses`, `npm run build`, and `npm test`. Fix failures before publication.
 4. Review the exact staged diff and file list. Scan first-party files and deployment assets for secrets, private keys, real personal data, absolute local paths and accidental logs. Do not print matched secret values. Keep `node_modules`, `dist`, local credentials, QA documents and archives out of source commits.
-5. Confirm relative paths, `.nojekyll`, the generated blank Word templates and offline dependencies. Test the nested repository path and both languages, CDI/CDD, chosen trial duration, editing and DOCX/PDF download.
+5. Confirm relative paths, `.nojekyll`, PDF fonts and offline dependencies. Test the nested repository path and both languages, CDI/CDD, chosen trial duration, editing and PDF download.
 
 ## GitHub Pages release
 
@@ -27,8 +30,8 @@ Maintain this static HTML/CSS/JavaScript application. Publish changes only when 
 - Commit only reviewed necessary files. Use the account's verified public noreply address for new automation commits when no repository author identity is already configured. Never place a token in a remote URL or command argument.
 - The workflow is `.github/workflows/pages.yml`, building and testing before deploying only `dist`. Use GitHub Pages `build_type: workflow`.
 - Inspect GitHub Actions for the pushed commit, fix any CI/build/deploy failure, and wait for successful deployment. Report the verified commit and run URL when useful.
-- Check the actual Pages URL over HTTPS, fetch its HTML/CSS/JavaScript/logo, and test the live app's form, legal checks, Arabic/French previews and Word/PDF download using synthetic inputs. Use desktop and mobile viewports when browser tooling permits. Do not transmit real user information during tests.
-- Do not claim publication, successful native Word rendering or device testing unless observed. Document tooling limits and retain any required follow-up clearly. Never bypass a browser, OS or authentication security barrier.
+- Check the actual Pages URL over HTTPS, fetch its HTML/CSS/JavaScript/logo, and test the live app's form, legal checks, Arabic/French previews and PDF download using synthetic inputs. Use desktop and mobile viewports when browser tooling permits. Do not transmit real user information during tests.
+- Do not claim publication, successful native document rendering or device testing unless observed. Document tooling limits and retain any required follow-up clearly. Never bypass a browser, OS or authentication security barrier.
 
 ## Updates
 

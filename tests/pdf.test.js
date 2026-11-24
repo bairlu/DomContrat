@@ -21,7 +21,7 @@ async function read(result) { const task = getDocument({ data: result.bytes.slic
     const pages = [];
     for (let n = 1; n <= pdf.numPages; n++) {
         const content = await (await pdf.getPage(n)).getTextContent();
-        pages.push(content.items.filter(i => 'str' in i).map(i => i.str).join(' ').replace(/\s+/g,' '));
+        pages.push(content.items.filter(i => 'str' in i && !(i.transform[5]<45 && /^\d+\/\d+$/.test(i.str))).map(i => i.str).join(' ').replace(/\s+/g,' '));
     }
     return pages;
 }
