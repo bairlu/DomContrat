@@ -1,0 +1,7 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+const lock=JSON.parse(fs.readFileSync('package-lock.json','utf8'));const notices=[];fs.mkdirSync('THIRD_PARTY_LICENSES',{recursive:true});for(const [rel,pkg] of Object.entries(lock.packages)){if(!rel)continue;const dir=path.resolve(rel);if(!fs.existsSync(dir))continue;const metadata=JSON.parse(fs.readFileSync(path.join(dir,'package.json'),'utf8'));const name=metadata.name;const files=fs.readdirSync(dir).filter(n=>/^(licen[cs]e|copying|notice)(\.|$)/i.test(n));for(const file of files){if(fs.statSync(path.join(dir,file)).isFile())fs.copyFileSync(path.join(dir,file),path.join('THIRD_PARTY_LICENSES',name.replace(/[^a-z0-9.-]/gi,'_')+'-'+file));}notices.push({name,version:metadata.version,license:metadata.license??pkg.license,repository:metadata.repository,licenseFiles:files});}fs.writeFileSync('THIRD_PARTY_NOTICES.json',JSON.stringify(notices,null,2));console.log(notices.length+' dependency notices recorded');
+fs.copyFileSync('public/fonts/OFL-Amiri.txt','THIRD_PARTY_LICENSES/Amiri-OFL.txt');
+notices.push({name:'Amiri',license:'OFL-1.1',source:'https://github.com/google/fonts/tree/main/ofl/amiri',files:['Amiri-Regular.ttf','Amiri-Bold.ttf'].map(name=>({name,sha256:crypto.createHash('sha256').update(fs.readFileSync('public/fonts/'+name)).digest('hex')})),licenseFiles:['Amiri-OFL.txt']});
+fs.writeFileSync('THIRD_PARTY_NOTICES.json',JSON.stringify(notices,null,2));

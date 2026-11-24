@@ -1,0 +1,272 @@
+{
+  "paragraphs": [
+    {
+      "text": "Modèle",
+      "original": "Modèle",
+      "breakBefore": false
+    },
+    {
+      "text": "du contrat de travail de la travailleuse",
+      "original": "du contrat de travail de la travailleuse",
+      "breakBefore": false
+    },
+    {
+      "text": "ou du travailleur domestique[1]",
+      "original": "ou du travailleur domestique",
+      "breakBefore": false
+    },
+    {
+      "text": "(l'article 3 de la loi n° 19.12 fixant les conditions de travail",
+      "original": "(l'article 3 de la loi n° 19.12 fixant les conditions de travail",
+      "breakBefore": false
+    },
+    {
+      "text": "et d'emploi des travailleuses et travailleurs domestiques)",
+      "original": "et d'emploi des travailleuses et travailleurs domestiques)",
+      "breakBefore": false
+    },
+    {
+      "text": "ENTRE LES SOUSSIGNES:",
+      "original": "ENTRE LES SOUSSIGNES:",
+      "breakBefore": false
+    },
+    {
+      "text": "L'employeuse ou employeur :",
+      "original": "L'employeuse ou employeur :",
+      "breakBefore": false
+    },
+    {
+      "text": "Prénom et nom:{employerName}",
+      "original": "Prénom et nom:…………………………………………….....................……………......……..",
+      "breakBefore": false
+    },
+    {
+      "text": "Adresse : {employerAddress}",
+      "original": "Adresse : …………………………………………………………...................…………………",
+      "breakBefore": false
+    },
+    {
+      "text": "N° de la carte  nationale d'identité[2] : {employerId}délivrée à{employerIssuePlace}  le{employerIssueDate}",
+      "original": "N° de la carte  nationale d'identité : ………….....……………délivrée à...................................  le..............................................................................................................................................",
+      "breakBefore": false
+    },
+    {
+      "text": "Et",
+      "original": "Et",
+      "breakBefore": false
+    },
+    {
+      "text": "La travailleuse ou le travailleur domestique :",
+      "original": "La travailleuse ou le travailleur domestique :",
+      "breakBefore": false
+    },
+    {
+      "text": "Prénom et nom:{workerName}",
+      "original": "Prénom et nom:……………………………………………………......................….….….……",
+      "breakBefore": false
+    },
+    {
+      "text": "N° de la carte  nationale d'identité[3] : {workerId}délivrée à{workerIssuePlace}  le{workerIssueDate}",
+      "original": "N° de la carte  nationale d'identité : ………….....……………délivrée à...................................  le..............................................................................................................................................",
+      "breakBefore": false
+    },
+    {
+      "text": "Date de naissance:{birth}",
+      "original": "Date de naissance:…………...………………………………………..…..…..…...................….",
+      "breakBefore": false
+    },
+    {
+      "text": "Situation familiale[4]:{marital}",
+      "original": "Situation familiale:……….……………………………………………..…….......................….",
+      "breakBefore": false
+    },
+    {
+      "text": "A été convenu ce qui suit :",
+      "original": "A été convenu ce qui suit :",
+      "breakBefore": false
+    },
+    {
+      "text": "Article Premier : Durée de travail[5]",
+      "original": "Article Premier : Durée de travail",
+      "breakBefore": false
+    },
+    {
+      "text": "Monsieur (Madame) est engagé(e) :{workerName}",
+      "original": "Monsieur (Madame) est engagé(e) :…………………………………….................................…",
+      "breakBefore": false
+    },
+    {
+      "text": "{cdiMark} Pour une durée indéterminée à compter du {cdiStart}",
+      "original": "Pour une durée indéterminée à compter du ……………………....................…....……..",
+      "breakBefore": false
+    },
+    {
+      "text": "{cddMark} Pour une durée déterminée de {cddDays} jours allant du{cddStart} au{cddEnd}",
+      "original": "Pour une durée déterminée de ……….....................................…… jours allant du……………............…… au…………..................................…………………….....….",
+      "breakBefore": false
+    },
+    {
+      "text": "Article 2 : Nature du travail ou du service",
+      "original": "Article 2 : Nature du travail ou du service",
+      "breakBefore": true
+    },
+    {
+      "text": "Monsieur  (Madame){workerName}",
+      "original": "Monsieur  (Madame)………………………………………………..................................……...",
+      "breakBefore": false
+    },
+    {
+      "text": "est engagé(e) en sa qualité de  {role}(déterminer       la nature du travail ou du service) ;",
+      "original": "est engagé(e) en sa qualité de  ………................................………………………(déterminer       la nature du travail ou du service) ;",
+      "breakBefore": false
+    },
+    {
+      "text": "Ses tâches sont les suivantes:[6]",
+      "original": "Ses tâches sont les suivantes:",
+      "breakBefore": false
+    },
+    {
+      "text": "{homeMark} effectuer les tâches ménagères;",
+      "original": "effectuer les tâches ménagères;",
+      "breakBefore": false
+    },
+    {
+      "text": "{childrenMark} prendre soin des enfants;",
+      "original": "prendre soin des enfants;",
+      "breakBefore": false
+    },
+    {
+      "text": "{careMark} prendre soin d'un membre de la famille en raison de son âge, son incapacité, sa maladie ou de sa situation d'handicape;",
+      "original": "prendre soin d'un membre de la famille en raison de son âge, son incapacité, sa maladie ou de sa situation d'handicape;",
+      "breakBefore": false
+    },
+    {
+      "text": "{drivingMark} la conduite;",
+      "original": "la conduite;",
+      "breakBefore": false
+    },
+    {
+      "text": "{gardenMark} les travaux de jardinage;",
+      "original": "les travaux de jardinage;",
+      "breakBefore": false
+    },
+    {
+      "text": "{guardMark} le gardiennage de la maison.",
+      "original": "le gardiennage de la maison.",
+      "breakBefore": false
+    },
+    {
+      "text": "Tout autre travail légalement autorisé peut être cité. {otherTask}",
+      "original": "Tout autre travail légalement autorisé peut être cité.",
+      "breakBefore": false
+    },
+    {
+      "text": "Article 3 : Période d'essai",
+      "original": "Article 3 : Période d'essai",
+      "breakBefore": false
+    },
+    {
+      "text": "Monsieur (Madame) {workerName}est soumis (e) à une période d'essai de {probationDays} Jours[7] durant laquelle chacune des parties peut rompre volontairement le contrat de travail, sans indemnités.",
+      "original": "Monsieur (Madame) ………………….....….est soumis (e) à une période d'essai de …. Jours durant laquelle chacune des parties peut rompre volontairement le contrat de travail, sans indemnités.",
+      "breakBefore": false
+    },
+    {
+      "text": "Article 4 : Durée de travail hebdomadaire",
+      "original": "Article 4 : Durée de travail hebdomadaire",
+      "breakBefore": false
+    },
+    {
+      "text": "La durée de travail hebdomadaire de Monsieur (Madame) {workerName}est fixée à {hours} heures[8].",
+      "original": "La durée de travail hebdomadaire de Monsieur (Madame) …………………est fixée à …....… heures.",
+      "breakBefore": false
+    },
+    {
+      "text": "Article 5 : Salaire",
+      "original": "Article 5 : Salaire",
+      "breakBefore": false
+    },
+    {
+      "text": "Monsieur (Madame) {workerName}perçoit un salaire en espèces[9] d'un montant de {salary}dirhams",
+      "original": "Monsieur (Madame) ………………………………………........…………perçoit un salaire en espèces d'un montant de ………………………...............................…….dirhams",
+      "breakBefore": false
+    },
+    {
+      "text": "Article 6 : Repos hebdomadaire, congé annuel et jours fériés",
+      "original": "Article 6 : Repos hebdomadaire, congé annuel et jours fériés",
+      "breakBefore": true
+    },
+    {
+      "text": "Monsieur (Madame){workerName} bénéficie :",
+      "original": "Monsieur (Madame)………….................................………. bénéficie :",
+      "breakBefore": false
+    },
+    {
+      "text": "- d'un repos hebdomadaire  le {rest} de chaque semaine dont la durée ne peut être inférieur à vingt quatre (24) heures continues ;",
+      "original": "d'un repos hebdomadaire  le ................... de chaque semaine dont la durée ne peut être inférieur à vingt quatre (24) heures continues ;",
+      "breakBefore": false
+    },
+    {
+      "text": "- d'un congé annuel payé dont la durée ne peut être inférieure à un jour et demi de travail pour chaque mois ;",
+      "original": "d'un congé annuel payé dont la durée ne peut être inférieure à un jour et demi de travail pour chaque mois ;",
+      "breakBefore": false
+    },
+    {
+      "text": "- d'un repos pendant les jours de fêtes religieuses et nationales qui peut être reporté à une date ultérieure fixée par commun accord des parties ;",
+      "original": "d'un repos pendant les jours de fêtes religieuses et nationales qui peut être reporté à une date ultérieure fixée par commun accord des parties ;",
+      "breakBefore": false
+    },
+    {
+      "text": "- de permissions d'absence pour des évènements familiaux.",
+      "original": "de permissions d'absence pour des évènements familiaux.",
+      "breakBefore": false
+    },
+    {
+      "text": "Article 7 :",
+      "original": "Article 7 :",
+      "breakBefore": false
+    },
+    {
+      "text": "Les dispositions de la loi n° 19.12 fixant les conditions de travail et d'emploi des travailleuses et travailleurs domestiques s'appliquent dans tous ce qui n'a pas été prévus par ce contrat type.",
+      "original": "Les dispositions de la loi n° 19.12 fixant les conditions de travail et d'emploi des travailleuses et travailleurs domestiques s'appliquent dans tous ce qui n'a pas été prévus par ce contrat type.",
+      "breakBefore": false
+    },
+    {
+      "text": "Les parties peuvent prévoir, dans le présent contrat, d'autres clauses plus avantageuses à la travailleuse ou au travailleur domestique, en plus de celles prévues par la loi n° 19.12 précitée, notamment en ce qui concerne la nourriture et l'hébergement.",
+      "original": "Les parties peuvent prévoir, dans le présent contrat, d'autres clauses plus avantageuses à la travailleuse ou au travailleur domestique, en plus de celles prévues par la loi n° 19.12 précitée, notamment en ce qui concerne la nourriture et l'hébergement.",
+      "breakBefore": false
+    },
+    {
+      "text": "Signature de l'employeuse ou",
+      "original": "Signature de l'employeuse ou",
+      "breakBefore": false
+    },
+    {
+      "text": "l'employeur[10]",
+      "original": "l'employeur",
+      "breakBefore": false
+    },
+    {
+      "text": "Signature de la travailleuse",
+      "original": "Signature de la travailleuse",
+      "breakBefore": false
+    },
+    {
+      "text": "ou du travailleur domestique[11]",
+      "original": "ou du travailleur domestique",
+      "breakBefore": false
+    }
+  ],
+  "footnotes": [
+    "Ce contrat doit être joint d'une autorisation écrite du tuteur dont la signature est légalisée si la travailleuse ou le travailleur domestique est âgé entre 16 et 18 ans.",
+    "Ou d'autre pièce qui la remplace pour les étrangers et assimilés",
+    "Ou le livret de l'état civil ou l'acte de naissance.",
+    "Célibataire/Marié (e)/divorcé (e)/veuf (ve)",
+    "Mettre une croix devant la durée choisie.",
+    "Mettre un croix devant la ou les tâches fixées avec possibilité de les détailler ou d'en ajouter d'autres",
+    "Cette durée est fixée au maximum à quinze (15)  jours",
+    "Est fixée  à 48 heures au maximum  par semaine pour les travailleuses et les travailleurs domestiques âgés (es) de plus de 18 ans et à 40 heures par semaine pour les travailleuses et les travailleurs âgés (es) entre 16 et 18 ans durant la période transitoire prévue dans l'article 6 de la loi n° 19.12",
+    "Le montant en espèces ne doit pas être inférieur à 60% du salaire minimum légal appliqué dans les secteurs d'industrie, du commerce et des professions libérales conformément aux dispositions de l'article 19 de la loi 19.12",
+    "La signature doit être légalisée par l'autorité compétente",
+    "La signature doit être légalisée par l'autorité compétente"
+  ]
+}
