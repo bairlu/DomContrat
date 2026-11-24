@@ -21,7 +21,7 @@ async function read(result) { const task = getDocument({ data: result.bytes.slic
     const pages = [];
     for (let n = 1; n <= pdf.numPages; n++) {
         const content = await (await pdf.getPage(n)).getTextContent();
-        pages.push(content.items.filter(i => 'str' in i).map(i => i.str).join(' '));
+        pages.push(content.items.filter(i => 'str' in i).map(i => i.str).join(' ').replace(/\s+/g,' '));
     }
     return pages;
 }
@@ -93,7 +93,7 @@ for (const language of ['ar', 'fr']) {
         assert.ok(text.includes('اسم معدل'));
         assert.ok(text.includes('عاملة معدلة'));
         assert.ok(text.includes(data.otherTask));
-        assert.ok(text.includes(language === 'ar' ? 'ملحق اتفاق' : 'Annexe'));
+        assert.ok(text.includes(language === 'ar' ? 'المادة 8: المزايا' : 'Article 8 : Avantages'));
         assert.ok(text.includes('2236.42'));
         if (process.env.PDF_QA_DIR)
             fs.writeFileSync(`${process.env.PDF_QA_DIR}/${language}-benefits.pdf`, result.bytes);

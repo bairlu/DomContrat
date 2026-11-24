@@ -9,6 +9,7 @@ Maintain this static HTML/CSS/JavaScript application. Publish changes only when 
 - Keep all form data, validation, DOCX/PDF generation and previews in browser memory. Never add a Backend, database, analytics, tracking, remote document API, localStorage, sessionStorage, IndexedDB, cookies or automatic saving of entered data.
 - Keep dependencies, fonts, logos and blank templates local. Never include real contracts, personal data, credentials, `.env` files, tokens, browser profiles or test outputs in Git or Pages artifacts. Tests must use clearly synthetic fixtures.
 - Preserve the seven articles, Arabic/French support, sex-specific wording, user-selected CDI probation of 1–15 days, CDD dates without automatic probation, free-text tasks and the existing legal validations.
+- Optional benefits belong to article 8 before the signatures, never an annex. Preserve the optional free-text otherBenefits field (maximum 3000 characters), and omit article 8 entirely when all benefits are empty. Keep filled values bold and article headings at 16pt; Word specifies Arial, PDF embeds the locally licensed Amiri. Never publish proprietary Windows font files without appropriate redistribution rights.
 - DOCX uses Docxtemplater and PizZip. DOCX and PDF share the current contract text. Do not put platform branding into the contract itself.
 - Change wage references only after checking an official source. Edit the central register in `src/legal-config.js`, preserve effective dates and references, and explain any legal behavior changes.
 

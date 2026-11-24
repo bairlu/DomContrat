@@ -15,29 +15,38 @@ export function contractBlocks(d) {
     const marital=ar?({single:female?'عزباء':'أعزب',married:female?'متزوجة':'متزوج',divorced:female?'مطلقة':'مطلق',widowed:female?'أرملة':'أرمل'}[v('marital')]??''):({single:'Célibataire',married:female?'Mariée':'Marié',divorced:female?'Divorcée':'Divorcé',widowed:female?'Veuve':'Veuf'}[v('marital')]??'');
     const workerParty=ar?(female?'والعاملة المنزلية:':'والعامل المنزلي:'):(female?'La travailleuse domestique :':'Le travailleur domestique :');
     const workerSignature=ar?(female?'توقيع العاملة المنزلية':'توقيع العامل المنزلي'):(female?'Signature de la travailleuse domestique':'Signature du travailleur domestique');
-    const b = (text, kind = 'body') => ({ text, kind });
+    const fill = value => '\ue000'+value+'\ue001';
+    const b = (marked, kind = 'body') => {
+        const runs=[];let bold=false;
+        for(const part of String(marked).split(/([\ue000\ue001])/)){
+            if(part==='\ue000')bold=true;
+            else if(part==='\ue001')bold=false;
+            else if(part)runs.push({text:part,bold});
+        }
+        return {text:runs.map(run=>run.text).join(''),kind,runs};
+    };
     const blocks = ar ? [
         b('عقد العمل الخاص بالعاملة أو العامل المنزلي', 'title'),
         b('المادة 3 من القانون رقم 19.12 بتحديد شروط الشغل والتشغيل المتعلقة بالعاملات والعمال المنزليين', 'subtitle'),
         b('بين الموقعين:'), b('المشغلة أو المشغل:', 'party'),
-        b(`الاسم الشخصي والعائلي: ${employer}`), b(`العنوان: ${v('employerAddress')}`),
-        b(`رقم البطاقة الوطنية للتعريف: ${v('employerId')}، المسلمة ب${v('employerIssuePlace')} بتاريخ ${date('employerIssueDate')}.`),
-        b(workerParty, 'party'), b(`الاسم الشخصي والعائلي: ${worker}`),
-        b(`رقم البطاقة الوطنية للتعريف: ${v('workerId')}، المسلمة ب${v('workerIssuePlace')} بتاريخ ${date('workerIssueDate')}.`),
-        b(`تاريخ الازدياد: ${date('birth')}`), b(`الحالة العائلية: ${marital}`), b('وقع الاتفاق على ما يلي:'),
-        b('المادة الأولى: مدة العمل', 'heading'), b(`يتم تشغيل ${title}: ${worker}`),
-        b(v('contractType') === 'CDI' ? `لمدة غير محددة تبتدىء من ${date('start')}.` : `لمدة محددة في ${duration(v('start'), v('end'))} يوما تبتدىء من ${date('start')} إلى ${date('end')}.`),
-        b('المادة 2: نوع الشغل أو الخدمة', 'heading'), b(`يتم تشغيل ${title} ${worker} ${female?'بصفتها':'بصفته'} ${v('role')}.`), b(female?'وتتمثل مهمتها في:':'وتتمثل مهمته في:'),
+        b(`الاسم الشخصي والعائلي: ${fill(employer)}`), b(`العنوان: ${fill(v('employerAddress'))}`),
+        b(`رقم البطاقة الوطنية للتعريف: ${fill(v('employerId'))}، المسلمة ب${fill(v('employerIssuePlace'))} بتاريخ ${fill(date('employerIssueDate'))}.`),
+        b(workerParty, 'party'), b(`الاسم الشخصي والعائلي: ${fill(worker)}`),
+        b(`رقم البطاقة الوطنية للتعريف: ${fill(v('workerId'))}، المسلمة ب${fill(v('workerIssuePlace'))} بتاريخ ${fill(date('workerIssueDate'))}.`),
+        b(`تاريخ الازدياد: ${fill(date('birth'))}`), b(`الحالة العائلية: ${fill(marital)}`), b('وقع الاتفاق على ما يلي:'),
+        b('المادة الأولى: مدة العمل', 'heading'), b(`يتم تشغيل ${title}: ${fill(worker)}`),
+        b(v('contractType') === 'CDI' ? `لمدة غير محددة تبتدىء من ${fill(date('start'))}.` : `لمدة محددة في ${fill(duration(v('start'), v('end')))} يوما تبتدىء من ${fill(date('start'))} إلى ${fill(date('end'))}.`),
+        b('المادة 2: نوع الشغل أو الخدمة', 'heading'), b(`يتم تشغيل ${title} ${fill(worker)} ${female?'بصفتها':'بصفته'} ${fill(v('role'))}.`), b(female?'وتتمثل مهمتها في:':'وتتمثل مهمته في:'),
         ...[
             ['home', 'الاعتناء بشؤون البيت؛'], ['children', 'الاعتناء بالأطفال؛'], ['care', 'الاعتناء بفرد من أفراد البيت بسبب سنه أو عجزه، أو مرضه، أو كونه من الأشخاص في وضعية إعاقة؛'], ['driving', 'السياقة؛'], ['garden', 'أعمال البستنة؛'], ['guard', 'حراسة البيت.'],
         ].map(([key, text]) => ({ ...b(text), checked: d.tasks.includes(key) })),
         b('يمكن الإشارة إلى أي عمل آخر مسموح به قانونا.'),
-        ...(d.tasks.includes('other') ? [{...b(v('otherTask')),checked:true}] : []),
-        b('المادة 3: فترة الاختبار', 'heading'), b(v('contractType')==='CDD'?'لا يتضمن هذا العقد المحدد المدة فترة اختبار.':`${female?'تخضع':'يخضع'} ${title} ${worker} لفترة اختبار مدتها ${v('probationDays')} يوما، ويمكن خلالها لأحد الطرفين إنهاء عقد الشغل بإرادته ودون تعويض.`),
-        b('المادة 4: مدة العمل الأسبوعية', 'heading'), b(`تحدد مدة العمل الأسبوعية ${female?'للسيدة':'للسيد'}: ${worker} في ${v('hours')} ساعة.`),
-        b('المادة 5: الأجر', 'heading'), b(`${female?'تتقاضى':'يتقاضى'} ${title}: ${worker} أجرا نقديا قدره ${v('salary')} درهما.`),
-        b('المادة 6: الراحة الأسبوعية والعطلة السنوية وأيام العطل', 'heading'), b(`${female?'تستفيد':'يستفيد'} ${title} ${worker} من:`),
-        b(`- راحة أسبوعية كل يوم ${label(c.rest, 'rest')} من الأسبوع لا تقل مدتها عن 24 ساعة متصلة.`),
+        ...(d.tasks.includes('other') ? [{...b(fill(v('otherTask'))),checked:true}] : []),
+        b('المادة 3: فترة الاختبار', 'heading'), b(v('contractType')==='CDD'?'لا يتضمن هذا العقد المحدد المدة فترة اختبار.':`${female?'تخضع':'يخضع'} ${title} ${fill(worker)} لفترة اختبار مدتها ${fill(v('probationDays'))} يوما، ويمكن خلالها لأحد الطرفين إنهاء عقد الشغل بإرادته ودون تعويض.`),
+        b('المادة 4: مدة العمل الأسبوعية', 'heading'), b(`تحدد مدة العمل الأسبوعية ${female?'للسيدة':'للسيد'}: ${fill(worker)} في ${fill(v('hours'))} ساعة.`),
+        b('المادة 5: الأجر', 'heading'), b(`${female?'تتقاضى':'يتقاضى'} ${title}: ${fill(worker)} أجرا نقديا قدره ${fill(v('salary'))} درهما.`),
+        b('المادة 6: الراحة الأسبوعية والعطلة السنوية وأيام العطل', 'heading'), b(`${female?'تستفيد':'يستفيد'} ${title} ${fill(worker)} من:`),
+        b(`- راحة أسبوعية كل يوم ${fill(label(c.rest, 'rest'))} من الأسبوع لا تقل مدتها عن 24 ساعة متصلة.`),
         b('- عطلة سنوية مدفوعة الأجر على ألا تقل مدتها عن يوم ونصف يوم عمل عن كل شهر؛'),
         b('- راحة خلال أيام الأعياد الدينية والوطنية ويمكن تأجيل الاستفادة منها إلى تاريخ لاحق يحدد باتفاق الطرفين؛'), b('- رخص عن التغيب لأسباب عائلية.'),
         b('المادة 7:', 'heading'),
@@ -46,29 +55,36 @@ export function contractBlocks(d) {
     ] : [
         b('Contrat de travail de la travailleuse ou du travailleur domestique', 'title'),
         b('(Article 3 de la loi n° 19.12 fixant les conditions de travail et d’emploi des travailleuses et travailleurs domestiques)', 'subtitle'),
-        b('ENTRE LES SOUSSIGNES:'), b('L’employeuse ou employeur :', 'party'), b(`Prénom et nom : ${employer}`), b(`Adresse : ${v('employerAddress')}`),
-        b(`N° de la carte nationale d’identité : ${v('employerId')}, délivrée à ${v('employerIssuePlace')} le ${date('employerIssueDate')}.`),
-        b(workerParty, 'party'), b(`Prénom et nom : ${worker}`), b(`N° de la carte nationale d’identité : ${v('workerId')}, délivrée à ${v('workerIssuePlace')} le ${date('workerIssueDate')}.`),
-        b(`Date de naissance : ${date('birth')}`), b(`Situation familiale : ${marital}`), b('A été convenu ce qui suit :'),
-        b('Article Premier : Durée de travail', 'heading'), b(`${title} est ${female?'engagée':'engagé'} : ${worker}`),
-        b(v('contractType') === 'CDI' ? `Pour une durée indéterminée à compter du ${date('start')}.` : `Pour une durée déterminée de ${duration(v('start'), v('end'))} jours allant du ${date('start')} au ${date('end')}.`),
-        b('Article 2 : Nature du travail ou du service', 'heading'), b(`${title} ${worker} est ${female?'engagée':'engagé'} en sa qualité de ${v('role')}.`), b('Ses tâches sont les suivantes :'),
+        b('ENTRE LES SOUSSIGNES:'), b('L’employeuse ou employeur :', 'party'), b(`Prénom et nom : ${fill(employer)}`), b(`Adresse : ${fill(v('employerAddress'))}`),
+        b(`N° de la carte nationale d’identité : ${fill(v('employerId'))}, délivrée à ${fill(v('employerIssuePlace'))} le ${fill(date('employerIssueDate'))}.`),
+        b(workerParty, 'party'), b(`Prénom et nom : ${fill(worker)}`), b(`N° de la carte nationale d’identité : ${fill(v('workerId'))}, délivrée à ${fill(v('workerIssuePlace'))} le ${fill(date('workerIssueDate'))}.`),
+        b(`Date de naissance : ${fill(date('birth'))}`), b(`Situation familiale : ${fill(marital)}`), b('A été convenu ce qui suit :'),
+        b('Article Premier : Durée de travail', 'heading'), b(`${title} est ${female?'engagée':'engagé'} : ${fill(worker)}`),
+        b(v('contractType') === 'CDI' ? `Pour une durée indéterminée à compter du ${fill(date('start'))}.` : `Pour une durée déterminée de ${fill(duration(v('start'), v('end')))} jours allant du ${fill(date('start'))} au ${fill(date('end'))}.`),
+        b('Article 2 : Nature du travail ou du service', 'heading'), b(`${title} ${fill(worker)} est ${female?'engagée':'engagé'} en sa qualité de ${fill(v('role'))}.`), b('Ses tâches sont les suivantes :'),
         ...[
             ['home', 'effectuer les tâches ménagères;'], ['children', 'prendre soin des enfants;'], ['care', 'prendre soin d’un membre de la famille en raison de son âge, son incapacité, sa maladie ou de sa situation d’handicape;'], ['driving', 'la conduite;'], ['garden', 'les travaux de jardinage;'], ['guard', 'le gardiennage de la maison.'],
         ].map(([key, text]) => ({ ...b(text), checked: d.tasks.includes(key) })),
-        b('Tout autre travail légalement autorisé peut être cité.'), ...(d.tasks.includes('other') ? [{...b(v('otherTask')),checked:true}] : []),
-        b('Article 3 : Période d’essai', 'heading'), b(v('contractType')==='CDD'?'Le présent contrat à durée déterminée ne prévoit pas de période d’essai.':`${title} ${worker} est ${female?'soumise':'soumis'} à une période d’essai de ${v('probationDays')} Jours durant laquelle chacune des parties peut rompre volontairement le contrat de travail, sans indemnités.`),
-        b('Article 4 : Durée de travail hebdomadaire', 'heading'), b(`La durée de travail hebdomadaire de ${title} ${worker} est fixée à ${v('hours')} heures.`),
-        b('Article 5 : Salaire', 'heading'), b(`${title} ${worker} perçoit un salaire en espèces d’un montant de ${v('salary')} dirhams.`),
-        b('Article 6 : Repos hebdomadaire, congé annuel et jours fériés', 'heading'), b(`${title} ${worker} bénéficie :`),
-        b(`- d’un repos hebdomadaire le ${label(c.rest, 'rest')} de chaque semaine dont la durée ne peut être inférieur à vingt quatre (24) heures continues ;`),
+        b('Tout autre travail légalement autorisé peut être cité.'), ...(d.tasks.includes('other') ? [{...b(fill(v('otherTask'))),checked:true}] : []),
+        b('Article 3 : Période d’essai', 'heading'), b(v('contractType')==='CDD'?'Le présent contrat à durée déterminée ne prévoit pas de période d’essai.':`${title} ${fill(worker)} est ${female?'soumise':'soumis'} à une période d’essai de ${fill(v('probationDays'))} Jours durant laquelle chacune des parties peut rompre volontairement le contrat de travail, sans indemnités.`),
+        b('Article 4 : Durée de travail hebdomadaire', 'heading'), b(`La durée de travail hebdomadaire de ${title} ${fill(worker)} est fixée à ${fill(v('hours'))} heures.`),
+        b('Article 5 : Salaire', 'heading'), b(`${title} ${fill(worker)} perçoit un salaire en espèces d’un montant de ${fill(v('salary'))} dirhams.`),
+        b('Article 6 : Repos hebdomadaire, congé annuel et jours fériés', 'heading'), b(`${title} ${fill(worker)} bénéficie :`),
+        b(`- d’un repos hebdomadaire le ${fill(label(c.rest, 'rest'))} de chaque semaine dont la durée ne peut être inférieur à vingt quatre (24) heures continues ;`),
         b('- d’un congé annuel payé dont la durée ne peut être inférieure à un jour et demi de travail pour chaque mois ;'), b('- d’un repos pendant les jours de fêtes religieuses et nationales qui peut être reporté à une date ultérieure fixée par commun accord des parties ;'), b('- de permissions d’absence pour des évènements familiaux.'),
         b('Article 7 :', 'heading'), b('Les dispositions de la loi n° 19.12 fixant les conditions de travail et d’emploi des travailleuses et travailleurs domestiques s’appliquent dans tous ce qui n’a pas été prévus par ce contrat type.'),
         b('Les parties peuvent prévoir, dans le présent contrat, d’autres clauses plus avantageuses à la travailleuse ou au travailleur domestique, en plus de celles prévues par la loi n° 19.12 précitée, notamment en ce qui concerne la nourriture et l’hébergement.'),
     ];
+    if(v('benefits')||v('otherBenefits')){
+        blocks.push(b(ar?'المادة 8: المزايا العينية الإضافية':'Article 8 : Avantages supplémentaires en nature','heading'));
+        if(v('benefits')){
+            const benefit=ar?({food:'الغذاء',housing:'المأوى',both:'الغذاء والمأوى'}[v('benefits')]):({food:'la nourriture',housing:'l’hébergement',both:'la nourriture et l’hébergement'}[v('benefits')]);
+            blocks.push(b(ar?`اتفق المشغل على توفير ${fill(benefit)} لفائدة ${female?'العاملة':'العامل'} ${fill(worker)}.`:`L’employeur s’engage à fournir ${fill(benefit)} au bénéfice de ${female?'la travailleuse':'le travailleur'} ${fill(worker)}.`));
+        }
+        if(v('otherBenefits'))blocks.push(b(ar?`مزايا إضافية أخرى متفق عليها: ${fill(v('otherBenefits'))}`:`Autres avantages supplémentaires convenus : ${fill(v('otherBenefits'))}`));
+        blocks.push(b(ar?'هذه المزايا إضافية ولا تُخصم من الأجر النقدي ولا تقلص الحقوق المنصوص عليها في العقد.':'Ces avantages s’ajoutent au salaire en espèces, sans déduction et sans réduction des droits prévus au contrat.'));
+    }
     blocks.push(b(ar ? 'توقيع المشغلة أو المشغل' : 'Signature de l’employeuse ou l’employeur', 'signature'), b(workerSignature, 'signature'));
-    if (v('benefits'))
-        blocks.push({ ...b(ar ? 'ملحق اتفاق إضافي أكثر فائدة للعامل' : 'Annexe — avantages supplémentaires plus favorables', 'title'), pageBefore: true }, b(ar ? `بين المشغلة أو المشغل: ${employer} ${female?'والعاملة':'والعامل'}: ${worker}` : `Entre l’employeur : ${employer} et ${female?'la travailleuse':'le travailleur'} : ${worker}`), b(ar ? `المزايا العينية المتفق عليها: ${label(c.benefits, 'benefits')}` : `Avantages en nature convenus : ${label(c.benefits, 'benefits')}`), b(ar ? 'هذه المزايا إضافية ولا تُخصم من الأجر النقدي ولا تقلص الحقوق المنصوص عليها في العقد.' : 'Ces avantages s’ajoutent au salaire en espèces, sans déduction et sans réduction des droits prévus au contrat.'), b(ar ? 'توقيع المشغلة أو المشغل' : 'Signature de l’employeuse ou l’employeur', 'signature'), b(workerSignature, 'signature'));
     return blocks;
 }
 const base64 = (bytes) => { let s = ''; for (let i = 0; i < bytes.length; i += 16384)
@@ -91,7 +107,7 @@ export async function createContractPdf(d, fonts) {
     let y = margin + 19;
     const placements = [];
     const blocks = contractBlocks(d);
-    const metrics = (b) => ({ size: b.kind === 'title' ? 19 : b.kind === 'subtitle' ? 11.5 : b.kind === 'heading' ? 14.5 : ar ? 14 : 12.5, line: b.kind === 'title' ? 28 : b.kind === 'subtitle' ? 18 : ar ? 22 : 20, gap: b.kind === 'heading' ? 4 : b.kind === 'party' ? 4 : 5, bold: ['title', 'heading', 'party', 'signature'].includes(b.kind) });
+    const metrics = (b) => ({ size: b.kind === 'title' ? 19 : b.kind === 'subtitle' ? 11.5 : b.kind === 'heading' ? 16 : ar ? 14 : 12.5, line: b.kind === 'title' ? 28 : b.kind === 'subtitle' ? 18 : ar ? 22 : 20, gap: b.kind === 'heading' ? 4 : b.kind === 'party' ? 4 : 5, bold: ['title', 'heading', 'party', 'signature'].includes(b.kind) });
     const font = (b) => { const m = metrics(b); doc.setFont(m.bold ? 'Amiri-Bold' : 'Amiri-Regular', 'normal'); doc.setFontSize(m.size); return m; };
     // A missing glyph must stop the export rather than silently truncate a legal
     // paragraph. Check the shaped forms that the PDF writer will actually paint.
@@ -103,12 +119,16 @@ export async function createContractPdf(d, fonts) {
                 throw Error('UNSUPPORTED_CHARACTERS');
         }
     }
+    const measuredWidth = text => {
+        const name=doc.getFont().fontName,normal=doc.getTextWidth(text);
+        doc.setFont('Amiri-Bold','normal');const bold=doc.getTextWidth(text);doc.setFont(name,'normal');return Math.max(normal,bold);
+    };
     const wrap = (text, max) => {
         const lines = [];
         let line = '';
         for (const word of clean(text).split(' ')) {
             const candidate = line ? line + ' ' + word : word;
-            if (doc.getTextWidth(candidate) <= max) {
+            if (measuredWidth(candidate) <= max) {
                 line = candidate;
                 continue;
             }
@@ -116,13 +136,13 @@ export async function createContractPdf(d, fonts) {
                 lines.push(line);
                 line = '';
             }
-            if (doc.getTextWidth(word) <= max) {
+            if (measuredWidth(word) <= max) {
                 line = word;
                 continue;
             }
             const pieces = Array.from(new Intl.Segmenter(ar ? 'ar' : 'fr', { granularity: 'grapheme' }).segment(word), s => s.segment);
             for (const piece of pieces) {
-                if (line && doc.getTextWidth(line + piece) > max) {
+                if (line && measuredWidth(line + piece) > max) {
                     lines.push(line);
                     line = '';
                 }
@@ -134,12 +154,27 @@ export async function createContractPdf(d, fonts) {
         return lines;
     };
     const nextPage = () => { doc.addPage(); y = margin + 19; };
-    const drawLine = (text, b, lineY, max) => {
+    const drawLine = (text, b, lineY, max, sourceOffset=0) => {
         const center = ['title', 'subtitle'].includes(b.kind);
         const right = width - margin - (b.checked !== undefined ? 17 : 0);
         const x = center ? width / 2 : ar ? right : margin + (b.checked !== undefined ? 17 : 0);
         const options = { align: center ? 'center' : ar ? 'right' : 'left', isInputVisual: false, isOutputVisual: true, isInputRtl: ar, isOutputRtl: false };
-        doc.text(text, x, lineY, options);
+        const mask=[];for(const run of b.runs??[])for(let n=0;n<run.text.length;n++)mask.push(run.bold);
+        if(metrics(b).bold||!mask.slice(sourceOffset,sourceOffset+text.length).some(Boolean))doc.text(text,x,lineY,options);
+        else {
+            const pieces=[];
+            for(let i=0;i<text.length;i++){
+                const bold=!!mask[sourceOffset+i],last=pieces.at(-1);
+                if(last&&last.bold===bold)last.text+=text[i];else pieces.push({text:text[i],bold});
+            }
+            let cursor=x;
+            for(const piece of pieces){
+                doc.setFont(piece.bold?'Amiri-Bold':'Amiri-Regular','normal');
+                doc.text(piece.text,cursor,lineY,options);
+                cursor+=(ar?-1:1)*doc.getTextWidth(piece.text);
+            }
+            font(b);
+        }
         placements.push({ page: doc.getNumberOfPages(), text, y: lineY, x: center ? width / 2 - doc.getTextWidth(text) / 2 : ar ? right - doc.getTextWidth(text) : x, width: doc.getTextWidth(text), kind: b.kind });
         if (doc.getTextWidth(text) > max + .1)
             throw Error('PDF_LINE_OVERFLOW');
@@ -204,7 +239,7 @@ export async function createContractPdf(d, fonts) {
         }
         if (lines.length > 1 && Math.floor((bottom - y) / m.line) + 1 < 2)
             nextPage();
-        let offset = 0;
+        let offset = 0, sourceOffset=0;
         while (offset < lines.length) {
             let fit = Math.floor((bottom - y) / m.line) + 1;
             if (fit < 1) {
@@ -225,7 +260,8 @@ export async function createContractPdf(d, fonts) {
                         doc.line(x + 3.2, y - 1.5, x + 6.7, y - 6.5);
                     }
                 }
-                drawLine(lines[offset + row], block, y, max);
+                const line=lines[offset+row];sourceOffset=block.text.indexOf(line,sourceOffset);
+                drawLine(line, block, y, max, sourceOffset);sourceOffset+=line.length;
                 y += m.line;
             }
             offset += count;

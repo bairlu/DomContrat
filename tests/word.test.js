@@ -19,7 +19,7 @@ for(const lang of ['ar','fr'])for(const type of ['CDI','CDD'])test(`${lang}/${ty
 });
 test('DOCX safely escapes long names, XML-like data and updates without losing fields',()=>{
  const d=pdfData('ar',{employerFirst:'اختبار <خاص> & آمن',employerAddress:'عنوان طويل '.repeat(40),workerLast:'A'.repeat(150),benefits:'both'});
- const a=text(generateWordDocument(d)),b=text(generateWordDocument({...d,workerFirst:'اسم معدل'}));assert.ok(a.text.includes(d.employerFirst));assert.ok(a.text.includes(d.employerAddress.trim()));assert.ok(b.text.includes('اسم معدل'));assert.ok(b.text.includes(d.workerLast));assert.ok(b.text.includes('2236.42'));assert.ok(b.text.includes('ملحق اتفاق'));assert.equal(b.document.getElementsByTagName('w:tbl').length,2);
+ const a=text(generateWordDocument(d)),b=text(generateWordDocument({...d,workerFirst:'اسم معدل'}));assert.ok(a.text.includes(d.employerFirst));assert.ok(a.text.includes(d.employerAddress.trim()));assert.ok(b.text.includes('اسم معدل'));assert.ok(b.text.includes(d.workerLast));assert.ok(b.text.includes('2236.42'));assert.ok(b.text.includes('المادة 8: المزايا'));assert.equal(b.document.getElementsByTagName('w:tbl').length,1);
 });
 test('DOCX export rejects incomplete, underage and unlawful wage data',()=>{
  for(const patch of [{salary:'2000'},{workerFirst:''},{hours:'49'},{birth:'2010-01-01'},{probationDays:'16'}])assert.throws(()=>generateWordDocument(pdfData('ar',patch)),/VALIDATION/);

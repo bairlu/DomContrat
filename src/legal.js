@@ -3,7 +3,7 @@ import {legal} from './legal-config.js';
 export {legal};
 export const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');};
 export const currentRate=(asOf=today())=>legal.rates.filter(r=>r.from<=asOf&&(!r.through||asOf<=r.through)).sort((a,b)=>b.from.localeCompare(a.from))[0]??null;
-export const blank = () => ({ language: 'ar', employerFirst: '', employerLast: '', employerAddress: '', employerIdType: '', employerId: '', employerIssuePlace: '', employerIssueDate: '', workerFirst: '', workerLast: '', gender: '', workerIdType: '', workerId: '', workerIssuePlace: '', workerIssueDate: '', birth: '', marital: '', contractType: '', start: '', end: '', role: '', probationDays: '', tasks: [], otherTask: '', hours: '', salary: '', rest: '', benefits: '', signPlace: '', signDate: '', inspectorate: '' });
+export const blank = () => ({ language: 'ar', employerFirst: '', employerLast: '', employerAddress: '', employerIdType: '', employerId: '', employerIssuePlace: '', employerIssueDate: '', workerFirst: '', workerLast: '', gender: '', workerIdType: '', workerId: '', workerIssuePlace: '', workerIssueDate: '', birth: '', marital: '', contractType: '', start: '', end: '', role: '', probationDays: '', tasks: [], otherTask: '', hours: '', salary: '', rest: '', benefits: '', otherBenefits: '', signPlace: '', signDate: '', inspectorate: '' });
 export const str = (d, k) => String(d[k] ?? '');
 export function validDate(s) { if (!/^\d{4}-\d{2}-\d{2}$/.test(s))
     return false; const t = new Date(s + 'T00:00:00Z'); return Number.isFinite(+t) && t.toISOString().slice(0, 10) === s; }
@@ -98,6 +98,7 @@ export function validate(d, step) {
     if (check('signDate') && str(d, 'signDate') && !validDate(str(d, 'signDate')))
         e.signDate = m.date;
     if (!step || step === 6) {
+        if(str(d,'otherBenefits').length>3000 || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\ue000\ue001]/.test(str(d,'otherBenefits')))e.otherBenefits=lang==='ar'?'اكتب المزايا الإضافية في حدود 3000 حرف دون رموز تحكم.':'Décrivez les avantages dans la limite de 3 000 caractères, sans caractères de contrôle.';
         if (str(d, 'benefits') && !['food', 'housing', 'both'].includes(str(d, 'benefits')))
             e.benefits = m.benefits;
     }

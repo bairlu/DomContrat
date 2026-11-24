@@ -47,6 +47,17 @@ for(const lang of ['ar','fr'])test(`${lang}: staged form gates progress, preview
  }finally{app.destroy();}
 });
 test('DomContrat identity, flags, clear reset and CDD with free tasks work through the full form',async()=>{const app=mountApp(root);try{assert.equal(document.title,'DomContrat');assert.ok(root.querySelector('img[alt="DomContrat"]'));assert.equal(root.querySelector('.top-strip'),null);assert.equal(root.querySelectorAll('.country-flag').length,4);assert.ok(root.querySelector('#reset-button.new-contract-button'));const custom='تنظيم مكتبة البيت وترتيب الوثائق المنزلية';const d=pdfData('ar',{contractType:'CDD',end:'2026-12-23',tasks:['other'],otherTask:custom});enter(d);next();change('rest','fri');click('preview-button');await wait();const url=document.getElementById('pdf-frame').src.split('#')[0],bytes=new Uint8Array(await blobs.get(url).arrayBuffer()),parsed=await pdfLogicalText(bytes);assert.ok(parsed.text.includes(custom));assert.ok(parsed.text.includes('23/12/2026'));assert.ok(!parsed.text.includes('اختبار مدتها 15'));click('edit-button');next();next();assert.equal(document.getElementById('otherTask').tagName,'TEXTAREA');assert.equal(document.getElementById('otherTask').value,custom);assert.equal(document.getElementById('end').value,d.end);}finally{app.destroy();}});
+for(const lang of ['ar','fr'])test(`${lang}: free additional benefits survive editing and appear inside the contract`,async()=>{
+ const app=mountApp(root);try{
+  const data=pdfData(lang);enter(data);next();change('rest','fri');change('benefits','both');
+  const custom=lang==='ar'?'النقل إلى مكان العمل — اختبار':'Transport vers le lieu de travail — test';
+  assert.equal(document.getElementById('otherBenefits').tagName,'TEXTAREA');change('otherBenefits',custom);
+  click('preview-button');await wait();let source=document.getElementById('pdf-frame').src.split('#')[0];
+  const text=(await pdfLogicalText(new Uint8Array(await blobs.get(source).arrayBuffer()))).text;
+  assert.ok(text.includes(custom));assert.ok(text.includes(lang==='ar'?'المادة 8':'Article 8'));assert.ok(!/Annexe|ملحق/.test(text));
+  click('edit-button');next();next();next();next();assert.equal(document.getElementById('otherBenefits').value,custom);assert.equal(document.getElementById('benefits').value,'both');
+ }finally{app.destroy();}
+});
 test('failed PDF generation retains data and enables retry',async()=>{
  const app=mountApp(root,{generatePdf:async()=>{throw Error('Synthetic failure');}});try{enter(pdfData());next();change('rest','fri');click('preview-button');for(let n=0;n<20&&!document.getElementById('status').textContent.includes('تعذر');n++)await new Promise(r=>setTimeout(r,5));assert.equal(document.getElementById('rest').value,'fri');assert.equal(document.getElementById('preview-button').disabled,false);assert.ok(document.getElementById('status').textContent.includes('تعذر'));assert.equal(document.getElementById('pdf-frame'),null);}finally{app.destroy();}
 });

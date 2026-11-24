@@ -8,7 +8,7 @@ export function prepareWordTemplates(root){
  const result={};
  for(const lang of ['ar','fr']){
   const ar=lang==='ar',dir=ar?'<w:bidi/>':'',rtl=ar?'<w:rtl/>':'',size=ar?28:25;
-  const p=(text,kind='body')=>`<w:p><w:pPr>${dir}<w:widowControl/>${['title','subtitle','heading','party','tail'].includes(kind)?'<w:keepNext/>':''}${kind==='title'||kind==='subtitle'?'<w:jc w:val="center"/>':''}<w:spacing w:after="100" w:line="420" w:lineRule="auto"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/>${rtl}${['title','heading','party','signature'].includes(kind)?'<w:b/><w:bCs/>':''}<w:sz w:val="${kind==='title'?38:kind==='subtitle'?23:kind==='heading'?29:size}"/><w:szCs w:val="${kind==='title'?38:kind==='subtitle'?23:kind==='heading'?29:size}"/></w:rPr><w:t xml:space="preserve">${text}</w:t></w:r></w:p>`;
+  const p=(text,kind='body')=>`<w:p><w:pPr>${dir}<w:widowControl/>${['title','subtitle','heading','party','tail'].includes(kind)?'<w:keepNext/>':''}${kind==='title'||kind==='subtitle'?'<w:jc w:val="center"/>':''}<w:spacing w:after="100" w:line="420" w:lineRule="auto"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/>${rtl}${['title','heading','party','signature'].includes(kind)?'<w:b/><w:bCs/>':''}<w:sz w:val="${kind==='title'?38:kind==='subtitle'?23:kind==='heading'?32:size}"/><w:szCs w:val="${kind==='title'?38:kind==='subtitle'?23:kind==='heading'?32:size}"/></w:rPr><w:t xml:space="preserve">${text}</w:t></w:r></w:p>`;
   const loop=(key,body)=>p(`{#${key}}`)+body+p(`{/${key}}`);
   let body=p('{#blocks}');
   for(const kind of ['title','subtitle','heading','party','body','tail'])body+=loop(kind,p('{text}',kind));
