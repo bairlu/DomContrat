@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {createHash} from 'node:crypto';
 import {build} from 'esbuild';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
@@ -22,4 +23,12 @@ fs.copyFileSync(path.join(root,'public/_headers'),path.join(output,'_headers'));
 fs.copyFileSync(path.join(root,'public/fonts/OFL-Amiri.txt'),path.join(output,'OFL-Amiri.txt'));
 fs.writeFileSync(path.join(output,'index.html'),fs.readFileSync(path.join(root,'index.html'),'utf8').replaceAll('./dist/','./'));
 await build({entryPoints:[path.join(root,'src/main.js')],bundle:true,format:'iife',target:'es2022',minify:true,outfile:path.join(output,'app.js'),loader:{'.ttf':'file'},assetNames:'fonts/[name]-[hash]',logLevel:'info'});
+// GitHub Pages can cache assets between deployments. Published HTML references
+// content fingerprints; the stable aliases keep the source-root file:// entry usable.
+let html=fs.readFileSync(path.join(output,'index.html'),'utf8');
+for(const extension of ['js','css']){
+ const source=path.join(output,`app.${extension}`),hash=createHash('sha256').update(fs.readFileSync(source)).digest('hex').slice(0,12),name=`app-${hash}.${extension}`;
+ fs.copyFileSync(source,path.join(output,name));html=html.replace(`./app.${extension}`,`./${name}`);
+}
+fs.writeFileSync(path.join(output,'index.html'),html);
 for(const file of ['THIRD_PARTY_NOTICES.json','THIRD_PARTY_LICENSES'])if(fs.existsSync(path.join(root,file)))fs.cpSync(path.join(root,file),path.join(output,file),{recursive:true});

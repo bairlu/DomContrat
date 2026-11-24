@@ -14,6 +14,7 @@ test('GitHub project Pages: all declared assets resolve under a repository prefi
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const base=`http://127.0.0.1:${server.address().port}/DomContrat/`;
  try{
   const html=await(await fetch(base)).text();const resources=[...html.matchAll(/(?:src|href)="([^"#]+)"/g)].map(x=>x[1]);assert.ok(resources.length>=3);
+  assert.match(html,/app-[a-f0-9]{12}\.js/);assert.match(html,/app-[a-f0-9]{12}\.css/);
   for(const resource of resources){const url=new URL(resource,base);assert.ok(url.pathname.startsWith('/DomContrat/'),url.href);assert.equal((await fetch(url)).status,200,url.href);}
   assert.equal((await fetch(base+'.nojekyll')).status,200);assert.ok(fs.existsSync('.github/workflows/pages.yml'));
   const script=await(await fetch(new URL('./app.js',base))).text();assert.ok(!script.includes('http://localhost:'));assert.ok(!/<script[^>]+src="https?:/.test(html));
