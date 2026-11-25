@@ -102,7 +102,7 @@ export function contractBlocks(d) {
 }
 const base64 = (bytes) => { let s = ''; for (let i = 0; i < bytes.length; i += 16384)
     s += String.fromCharCode(...bytes.subarray(i, i + 16384)); return btoa(s); };
-export async function createContractPdf(d, fonts) {
+export async function createContractPdf(d, fonts, settings={}) {
     if (Object.keys(validate(d)).length)
         throw Error('VALIDATION');
     const ar = str(d, 'language') !== 'fr';
@@ -115,12 +115,18 @@ export async function createContractPdf(d, fonts) {
     doc.setR2L(false);
     doc.setTextColor(0, 0, 0);
     doc.setDrawColor(0, 0, 0);
-    doc.setProperties({ title: ar ? 'عقد العمل الخاص بالعاملة أو العامل المنزلي' : 'Contrat de travail domestique', author: '', creator: '', subject: '', keywords: '' });
+    doc.setProperties({ title: settings.title??(ar ? 'عقد العمل الخاص بالعاملة أو العامل المنزلي' : 'Contrat de travail domestique'), author: '', creator: '', subject: '', keywords: '' });
     const width = doc.internal.pageSize.getWidth(), height = doc.internal.pageSize.getHeight(), margin = 54, usable = width - 2 * margin, bottom = height - margin - 7;
     let y = margin + 19;
+    if(settings.emblem){
+        // Clip the unmodified official logo to its coat of arms. No invented emblem or seal.
+        doc.saveGraphicsState();doc.rect(width/2-26,36,52,61,null);doc.clip();doc.discardPath();
+        doc.addImage(settings.emblem,'PNG',width/2-26-200*52/80,36,280*52/80,93*52/80);
+        doc.restoreGraphicsState();y=112;
+    }
     const placements = [];
-    const blocks = contractBlocks(d);
-    const metrics = (b) => ({ size: b.kind === 'title' ? 19 : b.kind === 'subtitle' ? 11.5 : b.kind === 'heading' ? 16 : ar ? 14 : 12.5, line: b.kind === 'title' ? 28 : b.kind === 'subtitle' ? 18 : b.kind === 'heading' ? 23 : ar ? 20 : 17, gap: b.kind === 'heading' ? 4 : ar ? 3 : 2, bold: ['title', 'heading', 'party', 'signature'].includes(b.kind) });
+    const blocks = settings.blocks??contractBlocks(d);
+    const metrics = (b) => ({ size: b.kind === 'title' ? 19 : b.kind === 'subtitle' ? 11.5 : b.kind === 'heading' ? 16 : b.kind==='letterhead'?12.5 : settings.receipt?13:ar ? 14 : 12.5, line: b.kind === 'title' ? 28 : b.kind === 'subtitle' ? 18 : b.kind==='letterhead'?18 : settings.receipt?19 : b.kind === 'heading' ? 23 : ar ? 20 : 17, gap: b.kind === 'heading' ? 4 : ar ? 3 : 2, bold: ['title', 'heading', 'party', 'signature','letterhead','administration'].includes(b.kind) });
     const font = (b) => { const m = metrics(b); doc.setFont(m.bold ? 'Amiri-Bold' : 'Amiri-Regular', 'normal'); doc.setFontSize(m.size); return m; };
     // A missing glyph must stop the export rather than silently truncate a legal
     // paragraph. Check the shaped forms that the PDF writer will actually paint.
@@ -173,7 +179,7 @@ export async function createContractPdf(d, fonts) {
     };
     const nextPage = () => { doc.addPage(); y = margin + 19; };
     const drawLine = (text, b, lineY, max, sourceOffset=0) => {
-        const center = ['title', 'subtitle'].includes(b.kind);
+        const center = ['title', 'subtitle','letterhead','administration'].includes(b.kind);
         const right = width - margin - (b.checked !== undefined ? 17 : 0);
         const x = center ? width / 2 : ar ? right : margin + (b.checked !== undefined ? 17 : 0);
         const options = { align: center ? 'center' : ar ? 'right' : 'left', isInputVisual: false, isOutputVisual: true, isInputRtl: ar, isOutputRtl: false };
@@ -217,6 +223,7 @@ export async function createContractPdf(d, fonts) {
             if (y + required > bottom)
                 nextPage();
         }
+        if(block.kind==='administration'&&y+100>bottom)nextPage();
         if (block.kind === 'signature') {
             // Both labels and their blank writing spaces are an indivisible group.
             const labels = blocks.slice(index, index + 2);
@@ -286,7 +293,7 @@ export async function createContractPdf(d, fonts) {
             if (offset < lines.length)
                 nextPage();
         }
-        y += m.gap;
+        y += m.gap+(block.kind==='administration'?80:0);
     }
     const pageCount = doc.getNumberOfPages();
     const pageNumbers=[];
@@ -299,9 +306,11 @@ export async function createContractPdf(d, fonts) {
     return { bytes, pageCount, placements, pageNumbers };
 }
 let loadedFonts;
+export function getPdfFonts(){
+ if(!loadedFonts){const decode=base64=>Uint8Array.from(atob(base64),c=>c.charCodeAt(0));loadedFonts={regular:decode(embeddedFonts.regular),bold:decode(embeddedFonts.bold)};}
+ return loadedFonts;
+}
 export async function generatePdfDocument(d){
  if(Object.keys(validate(d)).length)throw Error('VALIDATION');
-
- if(!loadedFonts){const decode=base64=>Uint8Array.from(atob(base64),c=>c.charCodeAt(0));loadedFonts={regular:decode(embeddedFonts.regular),bold:decode(embeddedFonts.bold)};}
- return createContractPdf(d,loadedFonts);
+ return createContractPdf(d,getPdfFonts());
 }

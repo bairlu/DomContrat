@@ -6,6 +6,7 @@ import {build} from 'esbuild';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const output=path.join(root,'dist');
+fs.writeFileSync(path.join(root,'src/receipt-logo.js'),'export default '+JSON.stringify('data:image/png;base64,'+fs.readFileSync(path.join(root,'public/brand/ministry-official.png')).toString('base64'))+';\n');
 const fonts=Object.fromEntries([['regular','Regular'],['bold','Bold']].map(([key,style])=>[key,fs.readFileSync(path.join(root,`public/fonts/Amiri-${style}.ttf`)).toString('base64')]));
 // Fonts are embedded so PDF generation needs no network, even from file://.
 fs.writeFileSync(path.join(root,'src/pdf-fonts.js'),'export default '+JSON.stringify(fonts)+';\n');

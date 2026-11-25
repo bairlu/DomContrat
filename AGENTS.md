@@ -46,3 +46,13 @@ After a requested update, repeat the checks and release procedure; pushing teste
 - Recto verso guidance stays below the PDF preview in the interface, outside the legal contract text.
 - Keep the full law title visible and retain the three verified Gazette links from src/legal-config.js. External references open only on a user click, with noreferrer; never fetch them automatically or append form data.
 - Build fingerprints JS/CSS filenames in published HTML to prevent stale cached assets. Stable app.js/app.css aliases serve the source-root local entry; do not remove those aliases without updating that entry and tests.
+
+
+## Deposit destination and receipt
+
+- The wizard has 8 stages: deposit destination is 7 and review is 8. Keep dependent office selection tied to the selected region and clear the office after a region change. Revalidate both documents after editing.
+- src/directorates.js is a reviewed local snapshot of the Ministry's 12 regions and 54 published offices. Keep original published office names, including regional headquarters when those are the listed office. Do not invent provincial offices or use staff names, phones or email addresses. Retain Arabic names if no matching French name is published. Record verified date and official page URLs when updating.
+- Account creation remains unavailable. Its button only explains that no account is needed, preserves current inputs and performs no registration or network call.
+- Receipt generation/preview/download is browser-local. The receipt is a model to present to the administration. Keep deposit number/date, administration signature and stamp blank; do not claim a download proves deposit or generate official receipt numbers, stamps or signatures.
+- The original Ministry logo asset and provenance must remain local. The PDF renderer clips the authentic coat of arms from the original image; never replace it with an invented or AI-generated emblem/seal. Only the receipt uses it, not the contract.
+- Preserve receipt and contract tabs, their exact downloadable Blob URLs, accessible controls and legal validation. Test the new receipt in both languages and render actual PDFs for layout review.
