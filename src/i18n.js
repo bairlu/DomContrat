@@ -648,8 +648,8 @@ export const copy={
   }
 };
 
-copy.ar.legalBasis=`تعمل هذه المنصة وفق ${law.citationAr}.`;
-copy.fr.legalBasis=`Cette plateforme est conçue conformément à la ${law.citationFr}.`;
+copy.ar.legalBasis=`تعمل هذه المنصة وفق ${law.citationAr}. كما وضعت وفق المرسوم رقم 2.17.355، المنشور بالجريدة الرسمية عدد 6609 بتاريخ 2 أكتوبر 2017، المحدد لنموذج عقد العمل الخاص بالعاملة أو العامل المنزلي.`;
+copy.fr.legalBasis=`Cette plateforme est conçue conformément à la ${law.citationFr} et au décret n° 2.17.355 fixant le modèle du contrat de travail de la travailleuse ou du travailleur domestique, publié au Bulletin officiel n° 6609 du 2 octobre 2017.`;
 copy.ar.automaticRole='تحدد تلقائياً حسب جنس العامل';
 copy.fr.automaticRole='Déterminée automatiquement selon le sexe';
 copy.ar.officialSources='المراجع الرسمية — الجريدة الرسمية';
