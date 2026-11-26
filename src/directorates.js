@@ -563,4 +563,9 @@ export const directorates=[
   }
 ];
 export const findRegion=id=>directorates.find(row=>row.id===id);
-export function depositOffice(regionId,officeId,language="ar"){const region=findRegion(regionId);if(!region)return null;const province=region.provinces.find(row=>row.id===officeId);return province?{regional:region.regional[language],provincial:province.label[language],source:region.source}:null;}
+export function depositOffice(regionId,officeId,language="ar"){const region=findRegion(regionId);if(!region)return null;const province=region.provinces.find(row=>row.id===officeId);return province?{regional:region.label[language],provincial:officeCity(province.label[language]),source:region.source}:null;}
+
+// Display only the locality; retain the original official snapshot above for maintenance.
+export function officeCity(name){
+ return name.replace(/^المديرية (?:الجهوية|الإقليمية) للتشغيل و الشؤون الاجتماعية\s*[–—-]\s*/, '').replace(/^Direction Reg\.? de /i,'').replace(/^Direction d[’']/i,'');
+}

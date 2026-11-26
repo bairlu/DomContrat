@@ -22,6 +22,7 @@ for(const language of ['ar','fr'])test(`${language}: real receipt PDF includes s
  assert.equal(new TextDecoder().decode(result.bytes.slice(0,5)),'%PDF-');assert.equal(result.pageCount,1);
  for(const value of [data.workerFirst,data.workerLast,data.employerFirst,data.employerLast,data.workerId,data.employerId,'01/01/2035',office.regional,office.provincial])assert.ok(parsed.text.replace(/\s/g,'').includes(value.replace(/\s/g,'')),value);
  assert.ok(parsed.text.includes(language==='ar'?'توقيع وخاتم الإدارة':'Signature et cachet de l’administration'));
+ assert.ok(!/نموذج|Modèle|الشؤون الاجتماعية|Affaires sociales|Direction Reg/.test(parsed.text));
  assert.ok(parsed.text.includes('__________________'));assert.ok(!/[{}]|DomContrat/.test(parsed.text));
  for(const row of result.placements){assert.ok(row.y>=54&&row.y<790);assert.ok(row.x>=53&&row.x+row.width<543);}
  const pdf=await PDFDocument.load(result.bytes);const images=pdf.context.enumerateIndirectObjects().filter(([,o])=>o?.dict instanceof PDFDict&&o.dict.get(PDFName.of('Subtype'))===PDFName.of('Image'));assert.ok(images.length>=1,'original official logo is embedded');
@@ -35,4 +36,9 @@ test('receipt changes its office and parties after editing, handles long data, a
  assert.ok(parsed.text.includes('مشغل معدل للاختبار'));assert.ok(parsed.text.includes('عين السبع الحي المحمدي'));assert.ok(!parsed.text.includes('شتوكة آيت بها'));
  for(const patch of [{salary:'700'},{birth:'2012-01-01'},{hours:'49'},{workerFirst:''},{depositOffice:'bad'}])await assert.rejects(()=>generateReceiptPdf(pdfData('ar',patch)),/VALIDATION|INVALID_DEPOSIT_OFFICE/);
  assert.equal(receiptBlocks(data).filter(block=>block.kind==='administration').length,1);
+});
+
+test('receipt directory display uses region and locality only while keeping source names intact',()=>{
+ assert.deepEqual(depositOffice('souss-massa','souss-massa-p0','ar'),{regional:'سوس ماسة',provincial:'شتوكة آيت بها',source:directorates.find(r=>r.id==='souss-massa').source});
+ for(const region of directorates)for(const office of region.provinces)for(const language of ['ar','fr']){const display=depositOffice(region.id,office.id,language);assert.ok(!/المديرية|الشؤون الاجتماعية|Direction|Affaires sociales/.test(display.regional+' '+display.provincial));}
 });

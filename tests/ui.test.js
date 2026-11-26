@@ -99,10 +99,11 @@ test('header is logo-only and footer repeats the logo with complete preparation 
 for(const language of ['ar','fr'])test(`${language}: deposit stage gates progress, resets dependent office, previews and downloads the actual receipt`,async()=>{
  downloads.length=0;const app=mountApp(root);try{
   enter(pdfData(language));next();change('rest','fri');next();assert.equal(document.getElementById('depositOffice').disabled,true);click('preview-button');assert.ok(document.getElementById('depositRegion-error').textContent);
-  change('depositRegion','souss-massa');assert.equal(document.getElementById('depositOffice').options.length,5);change('depositOffice','souss-massa-p0');
+  assert.ok(!root.textContent.includes('الأسماء من دليل الوزارة'));assert.equal(root.querySelector('a[href="https://www.emploi.gov.ma/directions-regionales/"]'),null);
+  change('depositRegion','souss-massa');assert.equal(document.getElementById('depositOffice').options.length,5);assert.equal(document.getElementById('depositOffice').options[1].textContent,'شتوكة آيت بها');change('depositOffice','souss-massa-p0');
   change('depositRegion','fes-meknes');assert.equal(document.getElementById('depositOffice').value,'');change('depositOffice','fes-meknes-p0');click('preview-button');await wait();
   assert.equal(root.querySelectorAll('.progress li').length,8);const contractUrl=document.getElementById('pdf-frame').src.split('#')[0];
-  click('preview-receipt');const receiptUrl=document.getElementById('pdf-frame').src.split('#')[0];assert.notEqual(receiptUrl,contractUrl);assert.ok(root.querySelector('.duplex-note').textContent.includes(language==='ar'?'لا يثبت':'ne prouve'));
+  click('preview-receipt');assert.ok(!/نموذج وصل|Modèle de récépissé/.test(root.textContent));const receiptUrl=document.getElementById('pdf-frame').src.split('#')[0];assert.notEqual(receiptUrl,contractUrl);assert.ok(root.querySelector('.duplex-note').textContent.includes(language==='ar'?'لا يثبت':'ne prouve'));
   click('receipt-download-button');assert.equal(downloads.at(-1).href,receiptUrl);assert.match(downloads.at(-1).name,/^وصل إيداع/);
   const receipt=(await pdfLogicalText(new Uint8Array(await blobs.get(receiptUrl).arrayBuffer()))).text;assert.ok(receipt.includes('إيفران'));assert.ok(receipt.includes(pdfData(language).workerFirst));
   click('preview-contract');assert.equal(document.getElementById('pdf-frame').src.split('#')[0],contractUrl);

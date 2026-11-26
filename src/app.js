@@ -1,4 +1,4 @@
-import {directorates,findRegion,directorySource,directoryVerified} from './directorates.js';
+import {directorates,findRegion,officeCity} from './directorates.js';
 import {generateReceiptPdf,receiptFilename} from './receipt.js';
 import {professionalRole,contractFilename} from './contract-data.js';
 import {officialSources} from './legal-config.js';
@@ -29,7 +29,7 @@ export function mountApp(root,services={}){
   const optional=['benefits','otherBenefits'].includes(key),req=required.has(key)||['end','otherTask','probationDays','employerExpiryDate','workerExpiryDate'].includes(key);
   const attrs=`id="${key}" name="${key}" aria-describedby="${key}-error" ${req?'required':''}`;
   let input;
-  if(selects[key]){const options=key==='depositRegion'?directorates.map(row=>[row.id,row.label[data.language]]):key==='depositOffice'?(findRegion(data.depositRegion)?.provinces??[]).map(row=>[row.id,row.label[data.language]]):c()[selects[key]];input=`<select ${attrs}><option value="">${optional?t().optional:t().select}</option>${options.map(([v,label])=>`<option value="${v}" ${data[key]===v?'selected':''}>${escape(label)}</option>`).join('')}</select>`;}
+  if(selects[key]){const options=key==='depositRegion'?directorates.map(row=>[row.id,row.label[data.language]]):key==='depositOffice'?(findRegion(data.depositRegion)?.provinces??[]).map(row=>[row.id,officeCity(row.label[data.language])]):c()[selects[key]];input=`<select ${attrs}><option value="">${optional?t().optional:t().select}</option>${options.map(([v,label])=>`<option value="${v}" ${data[key]===v?'selected':''}>${escape(label)}</option>`).join('')}</select>`;}
   else if(['otherTask','otherBenefits'].includes(key))input=`<textarea ${attrs} rows="4" maxlength="3000">${escape(data[key])}</textarea>`;
   else if(key==='employerAddress')input=`<textarea ${attrs} rows="3" maxlength="500">${escape(data[key])}</textarea>`;
   else input=`<input ${attrs} ${key==='role'?'readonly aria-readonly="true"':''} type="${dates.has(key)?'date':['hours','salary'].includes(key)?'number':'text'}" value="${escape(key==='role'?professionalRole(data):data[key])}" ${['hours','salary'].includes(key)?`inputmode="decimal" min="0.01" step="0.01" ${key==='hours'?'max="48"':''}`:'maxlength="500"'} ${dates.has(key)||['hours','salary','employerId','workerId'].includes(key)?'dir="ltr"':''}>`;
@@ -42,7 +42,7 @@ export function mountApp(root,services={}){
   if(step===3)return fields([...stepFields[3],'workerExpiryDate'])+`<div class="notice soft">${icon('shield')}<div>${t().legalNote}<strong id="age-output"></strong></div></div>`;
   if(step===4)return fields(['contractType','start','end','role','probationDays'])+`<p id="contract-help" class="section-note"></p><p id="duration-output" class="duration" hidden></p><div class="task-group"><h3 id="task-label" tabindex="-1">${t().tasksTitle} <span class="required">*</span></h3><div class="tasks" role="group" aria-labelledby="task-label">${c().tasks.map(([key,label])=>`<label class="task"><input type="checkbox" name="task" value="${key}" ${data.tasks.includes(key)?'checked':''}><span>${label}</span></label>`).join('')}</div><p id="tasks-error" class="field-error"></p></div>${fields(['otherTask'])}`;
   if(step===5)return fields(['hours','salary'])+`<p class="section-note">${rateNotice()}</p><div class="notice soft">${icon('lock')}<p>${t().cash}</p></div>`;
-  if(step===DEPOSIT_STEP)return fields(['depositRegion','depositOffice'])+`<p id="selected-regional-name" class="section-note"></p><p class="section-note">${t().directoryNote}</p><p class="section-note"><a href="${directorySource}" target="_blank" rel="noopener noreferrer">${t().directoryLink}</a> · ${directoryVerified}</p><div class="notice soft">${icon('doc')}<p>${t().receiptNotice}</p></div>`;
+  if(step===DEPOSIT_STEP)return fields(['depositRegion','depositOffice'])+`<div class="notice soft">${icon('doc')}<p>${t().receiptNotice}</p></div>`;
   return fields(['rest','benefits','otherBenefits'])+`<div class="rights-note">${icon('shield')}<p>${t().restHelp}</p></div><div class="notice soft">${icon('doc')}<p>${t().procedure}</p></div>`;
  }
  function reviewContent(){
@@ -78,7 +78,6 @@ export function mountApp(root,services={}){
    if(field){const visible=identityDateFields(data,prefix).includes(key);field.hidden=!visible;control.disabled=!visible||busy;control.required=visible;}
   }
   if($('#depositOffice'))$('#depositOffice').disabled=busy||!findRegion(data.depositRegion);
-  if($('#selected-regional-name'))$('#selected-regional-name').textContent=findRegion(data.depositRegion)?.regional[data.language]??'';
   if($('#receipt-download-button'))$('#receipt-download-button').disabled=busy||!receipt||Object.keys(allErrors()).length>0;
   if($('#tasks-error'))$('#tasks-error').textContent=attempted||touched.has('tasks')?errors.tasks??'':'';
   if($('#contract-help'))$('#contract-help').textContent=data.contractType==='CDD'?t().cddHelp:t().cdiHelp;

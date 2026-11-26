@@ -15,7 +15,7 @@ export function receiptBlocks(data){
   b(office.regional,'letterhead'),
   b(office.provincial,'letterhead'),
   b(ar?'وصل إيداع عقد العمل المنزلي':'Récépissé de dépôt du contrat de travail domestique','title'),
-  b(ar?'نموذج يقدّم للإدارة المختصة التي تستكمل رقم وتاريخ الإيداع وتوقعه وتختمه بعد الإيداع الفعلي.':'Modèle à présenter à l’administration compétente : numéro et date de dépôt, signature et cachet à compléter après le dépôt effectif.','subtitle'),
+  b(ar?'يقدّم للإدارة المختصة التي تستكمل رقم وتاريخ الإيداع وتوقعه وتختمه بعد الإيداع الفعلي.':'À présenter à l’administration compétente : numéro et date de dépôt, signature et cachet à compléter après le dépôt effectif.','subtitle'),
   b(ar?'رقم الإيداع: __________________    تاريخ الإيداع: __________________':'N° de dépôt : __________________    Date de dépôt : __________________'),
   b(ar?'يتعلق الإيداع بنظير عقد العمل المنزلي المبرم بين الطرفين التاليين:':'Le dépôt concerne un exemplaire du contrat de travail domestique conclu entre les parties suivantes :'),
   ...source.slice(first,last-1),
